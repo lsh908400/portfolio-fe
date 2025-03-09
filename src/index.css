@@ -1,0 +1,251 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Roboto", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+  letter-spacing: 0.5px;
+  font-size: 15px;
+  margin: 0;
+  padding: 0;
+  height: 100vh; /* 화면을 꽉 채우기 위해 */
+  background-color: white;
+  user-select: none;
+  width: 100%;
+}
+
+html {
+  height: 100%; /* 화면을 꽉 채우기 위해 */
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ul, li 기본 스타일 초기화 */
+ul {
+  list-style: none; /* 기본 불릿 포인트 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+}
+
+ol,
+dl {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+}
+
+li {
+  margin: 0; /* 기본 마진 제거 */
+}
+
+/* input 요소 스타일 초기화 */
+input {
+  border: none; /* 기본 테두리 제거 */
+  outline: none; /* 기본 아웃라인 제거 */
+  box-sizing: border-box; /* 폰트나 패딩이 요소 크기에 영향을 주지 않도록 설정 */
+  background-color: transparent; /* 배경색을 투명하게 설정 */
+}
+
+/* a 태그 기본 스타일 초기화 */
+a {
+  text-decoration: none; /* 기본 밑줄 제거 */
+  color: inherit; /* 링크 색상 기본 텍스트 색상으로 설정 */
+}
+
+/* p 태그 기본 스타일 초기화 */
+p {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+}
+
+button,
+input,
+select,
+textarea {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+  border: none; /* 기본 테두리 제거 */
+  background: none; /* 기본 배경 제거 */
+  outline: none; /* 기본 아웃라인 제거 */
+  box-sizing: border-box; /* 크기 조정을 위해 설정 */
+}
+
+/* form 기본 스타일 초기화 */
+form {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+}
+
+/* table 기본 스타일 초기화 */
+table {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+  border-spacing: 0; /* 기본 셀 간격 제거 */
+  border-collapse: collapse; /* 셀 경계가 합쳐지도록 설정 */
+}
+
+/* hr 기본 스타일 초기화 */
+hr {
+  margin: 0; /* 기본 마진 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+  border: none; /* 기본 테두리 제거 */
+  border-top: 1px solid #ccc; /* 원하는 스타일로 설정 */
+}
+#project {
+  margin: 0 auto; /* 가운데 정렬 */
+  max-width: 1920px; /* 최대 너비 설정 */
+  position: relative; /* 자식 요소의 absolute 위치 기준점 */
+  overflow: hidden; /* 좌우 스크롤 방지 */
+}
+.aside-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* 다른 요소 위에 표시 */
+  height: 100vh;
+  width: 250px; /* 사이드바 너비 */
+  transition: transform 0.5s ease;
+}
+
+
+/* index.css */
+@layer utilities {
+  
+  /* bg-color */
+  .bg-header-primary {
+    background-color: #111111; /* 주 색상 */
+  }
+  .bg-header-primary-hover:hover {
+    background-color: #c2c2c2 !important;
+    color: #333 !important;
+  }
+  .bg-main-primary{
+    background-color: #181818;
+  }
+  .bg-footer-primary{
+    background-color: #3b3b3b;
+  }
+  .bg-aside-primary{
+    background-color: #111111;
+  }
+  .bg-introduce-aside-color{
+    background-color: #404040;
+  }
+
+  .bg-blue{
+    background-color: #e0e8f3;
+  }
+
+  /* text-color */
+  .text-aside-primary {
+    color: rgb(201, 199, 199);
+  }
+  .text-custom-b{
+    color: #5386f9;
+  }
+
+  .text-primary{
+    color: rgb(82, 81, 81);
+    font-size: 1em;
+  }
+
+  /* border */
+  .border-gray {
+    border: 2px solid rgba(56,65,84,0.2);
+  }
+
+  /* box-shadow */
+  .box-shadow{
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  
+  /* layout */
+  .flex-grow {
+    flex: 1;
+  }
+
+  /* display */
+  .nav_sub_menu_type{
+    transition: height 0.5s ease;
+    height: 0;
+  }
+  .nav_sub_menu_type_introduce.active{
+    height: 150px;
+  }
+  .nav_sub_menu_type_front_end.active{
+    height: 150px;
+  }
+  .nav_sub_menu_type_back_end.active{
+    height: 150px;
+  }
+  .nav_sub_menu_type_study.active{
+    height: 150px;
+  }
+  .none {
+    visibility: hidden;
+  }
+  .nav_sub_menu.active{
+    background-color: #c2c2c2;
+    color: #333;
+  }
+
+  /* header btn effect */
+  
+  .menu_btn {
+    transition: transform 0.3s ease; /* 0.3초 동안 부드럽게 회전 */
+  }
+  .menu_btn:hover {
+    transform: rotate(90deg);
+  }
+
+
+  /* scrollbar */
+  #aside::-webkit-scrollbar {
+    display: none;
+  }
+
+  .content_section::-webkit-scrollbar{
+    display: none;
+  }
+  .code_modal::-webkit-scrollbar{
+    display: none;
+  }
+
+  .conner_ribon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+  }
+  
+  .conner_ribon::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 200px 100px 0;
+    border-color: transparent #555555 transparent transparent;
+  }
+}
+
+/* Button Custom Color */
+
+
+@media (max-width: 1920px) {
+  #project {
+    width: 100%; /* 화면이 1920px보다 작을 때는 전체 너비 사용 */
+  }
+}
