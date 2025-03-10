@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import VariableInfo from '../../util/VariableInfo'
 import useClickHandler from '../../../hooks/useClickHandler';
 import { getIntroduction, getUser, putAdventage, putGoals, putGrowth, putMotivation } from '../../../services/profileService';

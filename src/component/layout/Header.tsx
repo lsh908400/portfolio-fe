@@ -12,7 +12,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ domRef }) => {
-  const { isAsideCollapsed, active, inactive } = useAsideStateStore();
+  const {inactive } = useAsideStateStore();
   const navigate = useNavigate();
   const location = useLocation();
   
