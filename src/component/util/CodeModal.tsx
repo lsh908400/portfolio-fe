@@ -34,7 +34,6 @@ const CodeModal: React.FC<CodeModalProps> = ({
   title,
   content,
   language,
-  page,
 }) => {
   const [editableContent, setEditableContent] = useState<string>('');
   const [currentIndex, setCurrentIndex] = useState(0);
