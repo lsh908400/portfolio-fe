@@ -1,12 +1,10 @@
 import apiConfig from '../config/apiConfig';
 
 export const getPageCode = async (pageName: string) => {
-    try 
-    {
+    try {
         const response = await apiConfig.api.get(`${apiConfig.apiPaths.code}/${pageName}`);
         return response.data;
-    } catch (error) 
-    {
+    } catch (error) {
         console.error(`${pageName} 페이지 코드 가져오기 오류:`, error);
         throw error;
     }

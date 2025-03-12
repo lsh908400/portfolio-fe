@@ -11,22 +11,29 @@ interface HeaderProps {
   domRef: any;
 }
 
+interface CodeContent {
+  name: string;
+  content: string;
+}
+
 const Header: React.FC<HeaderProps> = ({ domRef }) => {
-  const {inactive } = useAsideStateStore();
+  const { inactive } = useAsideStateStore();
   const navigate = useNavigate();
   const location = useLocation();
   
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({
+  const [modalContent, setModalContent] = useState<{
+    title: string;
+    content: string | CodeContent[];
+    language: string;
+  }>({
     title: '',
     content: '',
     language: ''
   });
   
   const [currentPageCode, setCurrentPageCode] = useState<CodeSnippet>({
-    HTML: '',
     API: '',
-    JS: '',
     Front: '',
     Back: ''
   });
@@ -39,8 +46,7 @@ const Header: React.FC<HeaderProps> = ({ domRef }) => {
       setIsLoading(true);
       setError(null);
       
-      try 
-      {
+      try {
         const pageName = location.pathname.split('/').pop() || 'index';
         const response = await getPageCode(pageName);
         
@@ -76,11 +82,24 @@ const Header: React.FC<HeaderProps> = ({ domRef }) => {
   }, [location.pathname]);
   
   const openCodeModal = (type: string) => {
-    setModalContent({
-      title: `${type} 코드`,
-      content: currentPageCode[type as keyof CodeSnippet] || '코드를 불러올 수 없습니다.',
-      language: type
-    });
+    const codeData = currentPageCode[type as keyof CodeSnippet];
+    
+    // 배열인 경우 (하위 컴포넌트가 여러 개인 경우)
+    if (Array.isArray(codeData)) {
+      setModalContent({
+        title: `${type} 코드`,
+        content: codeData,
+        language: type
+      });
+    } else {
+      // 단일 문자열인 경우 (하위 컴포넌트가 없는 경우)
+      setModalContent({
+        title: `${type} 코드`,
+        content: codeData || '코드를 불러올 수 없습니다.',
+        language: type
+      });
+    }
+    
     setModalOpen(true);
   };
   
@@ -102,54 +121,45 @@ const Header: React.FC<HeaderProps> = ({ domRef }) => {
     }
   };
   
-  const handleClick = useClickHandler ( async (e: React.MouseEvent) => {
+  const handleClick = useClickHandler(async (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     const targetSection = target.closest('section');
     
     if (!targetSection) return;
-    const bIsClickedHomeBtn = target.classList.contains('header_home_btn')
-    const bIsClickedGetCodeBtn = target.classList.contains('get_code_btn')
-    const bIsClickedPutCodeBtn = target.classList.contains('put_code_btn')
+    const bIsClickedHomeBtn = target.classList.contains('header_home_btn');
+    const bIsClickedGetCodeBtn = target.classList.contains('get_code_btn');
+    const bIsClickedPutCodeBtn = target.classList.contains('put_code_btn');
 
-    switch(true)
-    {
-      case bIsClickedHomeBtn :
-      {
+    switch(true) {
+      case bIsClickedHomeBtn: {
         if (domRef.current === null || domRef.current === undefined) {
           return;
         }
         const allSubMenues: NodeListOf<HTMLUListElement> = domRef.current.querySelectorAll('.nav_sub_menu');
-        for (let i = 0; i < allSubMenues.length; i++) 
-        {
+        for (let i = 0; i < allSubMenues.length; i++) {
           allSubMenues[i].classList.remove('active');
         }
         navigate('/');
         inactive();
         break;
       }
-      case bIsClickedGetCodeBtn :
-      {
+      case bIsClickedGetCodeBtn: {
         const buttonText = targetSection.textContent?.trim();
-        if (buttonText && ['HTML', 'API', 'JS', 'Front', 'Back'].includes(buttonText)) 
-        {
+        if (buttonText && ['HTML', 'API', 'JS', 'Front', 'Back'].includes(buttonText)) {
           openCodeModal(buttonText);
         }
         break;
       }
-      case bIsClickedPutCodeBtn :
-      {
+      case bIsClickedPutCodeBtn: {
         try {
           setIsLoading(true);
           const pageName = location.pathname.split('/').pop() || 'index';
           const response = await putPageCode(pageName);
           
-          if (response.success && response.data) 
-          {
+          if (response.success && response.data) {
             setCurrentPageCode(response.data);
             alert('현재 페이지의 소스 코드를 성공적으로 가져왔습니다.');
-          } 
-          else 
-          {
+          } else {
             alert('소스 코드를 가져오는데 실패했습니다.');
           }
         } catch (err) {
@@ -161,12 +171,11 @@ const Header: React.FC<HeaderProps> = ({ domRef }) => {
         break;
       }
     }
-  })
-
+  });
   
   return (
     <>
-      <header id="header" className='bg-header-primary w-full h-[30px] text-white flex'>
+      <header id="header" className='bg-header-primary w-full h-[30px] text-white flex min-h-[30px] max-h-[30px]'>
         <section id='header_menu_btn' className='menu_btn menu_btn_target cursor-pointer w-[30px] h-full flex justify-center items-center'>
           <i className="menu_btn_target fa-solid fa-bars w-[12px] h-[12px]"></i>
         </section>
@@ -204,6 +213,7 @@ const Header: React.FC<HeaderProps> = ({ domRef }) => {
         title={modalContent.title}
         content={modalContent.content}
         language={modalContent.language}
+        page={location.pathname.split('/').pop() || 'index'}
         onUpdate={(newContent) => handleCodeUpdate(modalContent.language, newContent)}
       />
       

@@ -1,4 +1,3 @@
-// components/CodeModal.tsx
 import React, { useEffect, useState } from 'react';
 import Prism from 'prismjs';
 // 기본 테마
@@ -23,43 +22,66 @@ interface CodeModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  content: string;
+  content: string | Array<{name: string, content: string}>;
   language: string;
   onUpdate?: (content: string) => void;
+  page: string;
 }
 
-const CodeModal: React.FC<CodeModalProps> = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  content, 
+const CodeModal: React.FC<CodeModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  content,
   language,
+  page,
 }) => {
-  const [editableContent, setEditableContent] = useState(content);
+  const [editableContent, setEditableContent] = useState<string>('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [contentArray, setContentArray] = useState<Array<{name: string, content: string}>>([]);
   
+  // 초기 설정
   useEffect(() => {
-    // 모달이 열릴 때만 content를 editableContent에 설정
     if (isOpen) {
-      setEditableContent(content);
+      if (Array.isArray(content)) {
+        setContentArray(content);
+        setEditableContent(content[0]?.content || '');
+      } else {
+        setContentArray([{ name: title, content: content || '' }]);
+        setEditableContent(content || '');
+      }
+      setCurrentIndex(0);
     }
-  }, [isOpen, content]);
-  
+  }, [isOpen, content, title]);
+
+  // Prism 하이라이팅
   useEffect(() => {
-    // 모달이 열려있고, 편집 모드가 아닐 때만 Prism 하이라이팅 실행
     if (isOpen) {
-      // setTimeout을 사용하여 DOM이 완전히 렌더링된 후 Prism 실행
       const timer = setTimeout(() => {
         Prism.highlightAll();
       }, 0);
       return () => clearTimeout(timer);
     }
-  }, [isOpen, content]);
+  }, [isOpen, editableContent, currentIndex]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(editableContent);
     alert('코드가 클립보드에 복사되었습니다!');
   };
-  
+
+  const goToPrevious = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex(currentIndex - 1);
+      setEditableContent(contentArray[currentIndex - 1]?.content || '');
+    }
+  };
+
+  const goToNext = () => {
+    if (currentIndex < contentArray.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+      setEditableContent(contentArray[currentIndex + 1]?.content || '');
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -73,21 +95,25 @@ const CodeModal: React.FC<CodeModalProps> = ({
   };
 
   const prismLanguage = languageMap[language] || 'markup';
+  const currentTitle = Array.isArray(contentArray) && contentArray.length > 0 
+    ? `${title} - ${contentArray[currentIndex]?.name || ''}` 
+    : title;
+  const isMultipleContent = contentArray.length > 1;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="code_modal bg-white rounded-lg p-6 w-2/3 max-h-[80vh] overflow-scroll scrollbar-none">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">{title}</h2>
+      <div className="code_modal bg-white rounded-lg p-6 !pt-0 !pb-0 w-2/3 max-h-[80vh] overflow-scroll scrollbar-none">
+        <div className="flex justify-between items-center pb-4 sticky top-0 left-0 z-50 bg-white !pt-6">
+          <h2 className="text-xl font-bold text-gray-800">{currentTitle}</h2>
           <div>
-            <button 
+            <button
               onClick={copyToClipboard}
               className="text-blue-500 hover:text-blue-700 mr-3"
               title="복사하기"
             >
               <i className="fa-solid fa-copy"></i>
             </button>
-            <button 
+            <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
               title="닫기"
@@ -96,9 +122,38 @@ const CodeModal: React.FC<CodeModalProps> = ({
             </button>
           </div>
         </div>
+
+        {isMultipleContent && (
+          <div className="flex justify-between mb-4 sticky top-[67px] left-0 z-50 bg-white">
+            <div className="text-sm text-gray-500">
+              {currentIndex + 1} / {contentArray.length}
+            </div>
+            <div className="flex space-x-2">
+              <button
+                onClick={goToPrevious}
+                disabled={currentIndex === 0}
+                className={`px-3 py-1 rounded ${
+                  currentIndex === 0 ? 'bg-gray-200 text-gray-400' : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+              >
+                <i className="fa-solid fa-arrow-left mr-1"></i> 이전
+              </button>
+              <button
+                onClick={goToNext}
+                disabled={currentIndex === contentArray.length - 1}
+                className={`px-3 py-1 rounded ${
+                  currentIndex === contentArray.length - 1 ? 'bg-gray-200 text-gray-400' : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+              >
+                다음 <i className="fa-solid fa-arrow-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        )}
+        
         <div className="overflow-auto">
           <pre className="line-numbers">
-            <code className={`language-${prismLanguage}`}>{content}</code>
+            <code className={`language-${prismLanguage}`}>{editableContent}</code>
           </pre>
         </div>
       </div>

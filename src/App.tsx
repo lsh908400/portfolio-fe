@@ -3,6 +3,7 @@ import './App.css'
 import MainLayout from './layout/MainLayout'
 import Profile from './pages/Profile'
 import Home from './pages/Home'
+import TroubleShooting from './pages/TroubleShooting'
 
 const App : React.FC = () => {
   return (
@@ -10,7 +11,7 @@ const App : React.FC = () => {
       <Route path="/" element={<MainLayout />}>
           <Route index element = {<Home />} />
           <Route path='/profile' element={<Profile />} />
-          <Route path='/trouble' element={<></>} />
+          <Route path='/trouble' element={<TroubleShooting />} />
       </Route>
     </Routes>
   )

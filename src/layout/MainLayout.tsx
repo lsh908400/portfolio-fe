@@ -36,11 +36,10 @@ const MainLayout: React.FC = () => {
         <Header 
           domRef={domRef}
         />
-        <div className='flex-grow bg-main-primary main_layout_content w-full h-full flex relative'>
-            <Aside  
-            />
+        <div className='flex-grow bg-white main_layout_content w-full h-content flex relative'>
+            <Aside/>
             <main 
-              className='main_content flex-grow h-full'>
+              className='main_content flex-grow h-content'>
                 <Outlet />
             </main>
         </div>

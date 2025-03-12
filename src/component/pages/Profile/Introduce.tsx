@@ -16,6 +16,14 @@ const Introduce : React.FC = () => {
         {id : "adventage" , isEditing : false},
         {id : "goals" , isEditing : false}
     ])
+    const [loading, setLoading] = useState({
+        user: true,
+        introduction: true
+    });
+    const [error, setError] = useState({
+        user: null as string | null,
+        introduction: null as string | null
+    });
     
     const handleClick = useClickHandler((e: React.MouseEvent) => {
         const target = e.target as HTMLElement
@@ -207,13 +215,13 @@ const Introduce : React.FC = () => {
             }
         }
     })
+    
     const handleChange = useChangeHandler((e: React.ChangeEvent, value : string) => {
         const target = e.target as HTMLElement;
         const bIsChangedMotivation = target.classList.contains('motivation')
         const bIsChangedGrowth = target.classList.contains('growth')
         const bIsChangedAdventage = target.classList.contains('adventage')
         const bIsChangedGoals = target.classList.contains('goals')
-
 
         switch(true)
         {
@@ -252,14 +260,7 @@ const Introduce : React.FC = () => {
         }
     })
 
-    const [loading, setLoading] = useState({
-        user: true,
-        introduction: true
-    });
-    const [error, setError] = useState({
-        user: null as string | null,
-        introduction: null as string | null
-    });
+
     
     useEffect(() => {
         const controller = new AbortController();
@@ -274,7 +275,7 @@ const Introduce : React.FC = () => {
                     setError(prev => ({ ...prev, introduction: err.message || '자기소개서를 가져오는데 실패했습니다' }));
                     return { data: null };
                 })
-                ]);
+                ])
         
                 setUser(userResponse.data);
                 setLoading(prev => ({ ...prev, user: false }));
@@ -314,7 +315,7 @@ const Introduce : React.FC = () => {
 
     return (
     <div id='introduce' className='flex h-full'>
-        <section className='profile_section bg-introduce-aside-color w-[350px] h-full text-aside-primary'>
+        <section className='profile_section bg-introduce-aside-color w-[350px] h-full text-aside-primary overflow-auto'>
             <article className='side_inner_shell h-full flex items-center flex-col'>
                 <div className='profile_img_box w-[200px] !mt-[60px]'>
                     <img src='/public/assets/profile.png' />
@@ -423,7 +424,7 @@ const Introduce : React.FC = () => {
                 </div>
             </article>
         </section>
-        <section className='content_section flex-grow overflow-scroll scrollbar-none'>
+        <section className='content_section flex-grow h-full overflow-auto scrollbar-none'>
             <article className='content_inner_shell flex flex-col !px-[15%]'>
                 <div className='conner_ribon'></div>
                 <div className='title_box !mt-[100px] border-b flex items-end'>

@@ -3,7 +3,7 @@ export interface CodeSnippet {
     HTML?: string;
     API?: string;
     JS?: string;
-    Front?: string;
+    Front?: any;
     Back?: string;
 }
 
@@ -22,4 +22,10 @@ export interface introduction {
     growth? : string,
     adventage? : string,
     goals? : string
+}
+
+export interface category {
+    id? : string,
+    icon? : string,
+    title : string,
 }

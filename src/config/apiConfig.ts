@@ -30,7 +30,7 @@ const apiConfig = {
     baseUrl: API_URL || 'http://localhost:5000/api',
   },
   production: {
-    baseUrl: API_URL || 'https://3.39.9.231/api',
+    baseUrl: API_URL || 'http://15.164.212.30:5000//api',
   }
 };
 
@@ -51,6 +51,7 @@ const api = axios.create({
 const apiPaths = {
   code: '/code',
   user: '/user',
+  category: '/category',
 };
 
 export default {

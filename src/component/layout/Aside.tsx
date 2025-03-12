@@ -207,9 +207,6 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
             <li onClick={handleClick} className='nav_menu_type_study font-bold bg-header-primary-hover rounded-[5px] cursor-pointer'>• Study</li>
             <ul className='w-full h-auto !p-[5px] none nav_sub_menu_type nav_sub_menu_type_study flex flex-col gap-[5px]'>
               <li onClick={handleClick} className='nav_sub_menu nav_sub_menu_type_trouble bg-header-primary-hover cursor-pointer border-b'>• Troubleshooting</li>
-              <li className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b'>Type2</li>
-              <li className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b'>Type3</li>
-              <li className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b'>Type4</li>
             </ul>
           </ul>
         </nav>
