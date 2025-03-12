@@ -265,7 +265,7 @@ const TroubleShooting: React.FC = () => {
                             className='flex justify-between hover-aside-primary !p-3 rounded-sm cursor-pointer relative'
                         >
                             <div 
-                                onClick={(e)=>deleteCategoryHandler(item.id)} 
+                                onClick={()=>deleteCategoryHandler(item.id)} 
                                 className={`absolute top-[-5px] left-[-6px] bg-gray
                                 border-gray-400 border w-[15px] h-[15px] flex justify-center items-center 
                                 rounded-full text-[8px] hover:bg-gray-400 hover:text-white ${uiState.editMode ? '' : 'display-none'}`}>
