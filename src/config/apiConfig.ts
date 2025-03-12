@@ -30,7 +30,7 @@ const apiConfig = {
     baseUrl: API_URL || 'http://localhost:5000/api',
   },
   production: {
-    baseUrl: API_URL || 'http://15.164.212.30:5000//api',
+    baseUrl: API_URL || 'http://15.164.212.30:5000/api',
   }
 };
 
