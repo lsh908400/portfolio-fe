@@ -29,3 +29,24 @@ export interface category {
     icon? : string,
     title : string,
 }
+
+export interface board {
+    id? : string,
+    title? : string,
+    categoryId? : string,
+    createAt? : string,
+    modifyAt? : string
+}
+
+
+export interface BlockData {
+    id: string;
+    type: 'paragraph' | 'header' | 'list' | 'image' | 'title';
+    data: {
+        text?: string;
+        level?: number;
+        items?: string[];
+        url?: string;
+        caption?: string;
+    };
+}

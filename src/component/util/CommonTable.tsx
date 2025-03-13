@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CommonBtn from './CommonBtn';
 
 // 검색 옵션 타입
@@ -43,7 +43,7 @@ interface CommonTableProps {
   columns: TableColumn[];
   data: any[];
   showCheckbox?: boolean;
-  checkedItems?: string[] | number[];
+  checkedItems?: (string| number)[];
   onCheckChange?: (ids: (string | number)[]) => void;
   
   // 행 클릭 관련 props
@@ -55,6 +55,7 @@ interface CommonTableProps {
   headerClassName?: string;
   rowClassName?: string;
   cellClassName?: string;
+  
 }
 
 
@@ -88,6 +89,8 @@ const CommonTable: React.FC<CommonTableProps> = ({
   rowClassName = 'border-b h-10 text-gray-400 font-normal text-[0.8em]',
   cellClassName = 'text-start px-4'
 }) => {
+
+  
   // 검색 상태 관리
   const [searchOption, setSearchOption] = React.useState(defaultSearchOption);
   const [searchKeyword, setSearchKeyword] = React.useState('');
@@ -97,7 +100,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
   
   // 체크박스 전체 선택 처리
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
+    if (e.target.checked && data.length > 0) {
       // ID로 가정, 필요에 따라 조정
       const allIds = data.map((item) => item.id || item._id);
       setSelectedItems(allIds);
@@ -107,6 +110,11 @@ const CommonTable: React.FC<CommonTableProps> = ({
       onCheckChange([]);
     }
   };
+
+  useEffect(() => {
+    // checkedItems가 변경될 때 selectedItems 상태 업데이트
+    setSelectedItems(checkedItems);
+  }, [checkedItems]);
   
   // 개별 체크박스 처리
   const handleSelectItem = (e: React.ChangeEvent<HTMLInputElement>, id: string | number) => {
@@ -213,7 +221,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {data.map((row, rowIndex) => (
+          {data?.map((row, rowIndex) => (
             <tr 
               key={rowIndex} 
               className={`${rowClassName} ${rowClickable ? 'cursor-pointer hover:bg-gray-50' : ''}`}
@@ -226,7 +234,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
               } : undefined}
             >
               {showCheckbox && (
-                <td className={cellClassName} onClick={(e) => e.stopPropagation()}>
+                <td className={`${cellClassName} ${(row.ccategoryId === '0' || row.categoryId === 0) ? 'bg-blue-100' : ''}`} onClick={(e) => e.stopPropagation()}>
                   <input 
                     type='checkbox'
                     checked={selectedItems.includes(row.id || row._id)}
@@ -237,7 +245,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
               {columns.map((column, colIndex) => (
                 <td 
                   key={colIndex} 
-                  className={`${cellClassName} ${column.clickable && !rowClickable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                  className={`${cellClassName} ${column.clickable && !rowClickable ? 'cursor-pointer hover:bg-gray-100' : ''} ${(row.ccategoryId === '0' || row.categoryId === 0) ? 'bg-blue-100' : ''}`}
                   onClick={(e) => {
                     // 행 클릭이 활성화되어 있지 않고, 특정 컬럼만 클릭 가능한 경우
                     if (!rowClickable && column.clickable && column.onClick) {
@@ -246,9 +254,11 @@ const CommonTable: React.FC<CommonTableProps> = ({
                     }
                   }}
                 >
-                  {typeof column.accessor === 'function' 
+                  {typeof column.accessor === 'function'
                     ? column.accessor(row)
-                    : row[column.accessor]
+                    : column.accessor === 'id'
+                      ? rowIndex + 1 
+                      : row[column.accessor] 
                   }
                 </td>
               ))}

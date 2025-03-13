@@ -6,11 +6,12 @@ interface FieldConfig {
     id?: string;
     className?: string;
     label?: string;
-    value?: string;
+    value?: any;
     placeholder?: string;
     options?: Array<{ value: string; label: string }>;
-    onChange?: (e: Event, value: any) => void; 
+    onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void; 
     onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
     children?: ReactNode;
     style?: React.CSSProperties;
     infoDivClassName? : string;
@@ -59,6 +60,7 @@ const VariableInfo: React.FC<VariableInfoProps> = ({
       options,
       onChange,
       onClick,
+      onKeyDown,
       children,
       style: fieldStyle,
       infoDivClassName,
@@ -88,9 +90,16 @@ const VariableInfo: React.FC<VariableInfoProps> = ({
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         if (onChange) 
         {
-        onChange(e.nativeEvent, e.target.value);
+        onChange(e);
         }
     };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        if(onKeyDown)
+        {
+            onKeyDown(e);
+        }
+    }
     
     
 
@@ -123,7 +132,9 @@ const VariableInfo: React.FC<VariableInfoProps> = ({
             <input
                 id={fieldId}
                 value={value}
-                onChange={handleChange}
+                onChange={(e)=>handleChange(e)}
+                onKeyDown={(e)=>handleKeyDown(e)}
+                className='w-[80%] border-gray !border !px-1 rounded-sm'
                 placeholder={placeholder}
                 style={fieldStyle}
                 {...rest}

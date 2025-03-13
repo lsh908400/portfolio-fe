@@ -52,6 +52,8 @@ const apiPaths = {
   code: '/code',
   user: '/user',
   category: '/category',
+  board: '/board',
+  blocks: '/blocks',
 };
 
 export default {
