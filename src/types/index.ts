@@ -42,11 +42,25 @@ export interface board {
 export interface BlockData {
     id: string;
     type: 'paragraph' | 'header' | 'list' | 'image' | 'title';
+    index: number;
     data: {
         text?: string;
         level?: number;
         items?: string[];
         url?: string;
         caption?: string;
+        style?: 'underline' | 'bold' | 'crooked' | 'cancelline' | 'link' | 'basic'
+        color?: string; 
     };
+}
+
+export enum IconHoverEnum {
+    PLUS,
+    BASIC,
+    CROOKED,
+    UNDERLINE,
+    BOLD,
+    CANCELLINE,
+    LINK,
+    COLOR
 }

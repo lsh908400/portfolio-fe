@@ -97,6 +97,7 @@ const TroubleShooting: React.FC = () => {
                 return <Editor
                         initialData={editorInfo.blockData}
                         title={editorInfo.title}
+                        id={editorInfo.id}
                         />;
             default: 
                 return null;

@@ -56,11 +56,11 @@ const EditorTable : React.FC<EditorTableProps> = ({tableInfo,setTableInfo,loadin
             const title = row.title;
             
             // 데이터를 기다림
-            const response = await getBlocks(id, title);
+            const response = await getBlocks(id);
             
             // 데이터가 성공적으로 받아지면 editorInfo 상태 업데이트
             setEditorInfo((prev : any) => ({
-                ...prev, title, blockData: response.data
+                ...prev, title, id, blockData: response.data
             }));
             
             // 로딩 완료

@@ -226,15 +226,22 @@ const CommonTable: React.FC<CommonTableProps> = ({
               key={rowIndex} 
               className={`${rowClassName} ${rowClickable ? 'cursor-pointer hover:bg-gray-50' : ''}`}
               onClick={rowClickable && onRowClick ? (e) => {
-                // 체크박스 클릭 시 행 클릭 이벤트가 발생하지 않도록 처리
                 if (e.target instanceof HTMLInputElement && e.target.type === 'checkbox') {
                   return;
                 }
                 onRowClick(row);
-              } : undefined}
+                } : undefined}
             >
               {showCheckbox && (
-                <td className={`${cellClassName} ${(row.ccategoryId === '0' || row.categoryId === 0) ? 'bg-blue-100' : ''}`} onClick={(e) => e.stopPropagation()}>
+                <td
+                 className={`${cellClassName} ${(row.ccategoryId === '0' || row.categoryId === 0) ? 'bg-blue-100' : ''}`} 
+                 onClick={rowClickable && onRowClick ? (e) => {
+                  if (e.target instanceof HTMLInputElement && e.target.type === 'checkbox') {
+                    return;
+                  }
+                  onRowClick(row);
+                  } : undefined}
+                 >
                   <input 
                     type='checkbox'
                     checked={selectedItems.includes(row.id || row._id)}
