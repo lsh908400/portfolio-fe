@@ -49,11 +49,11 @@ const api = axios.create({
 
 // API 경로 구성
 const apiPaths = {
-  code: '/code',
-  user: '/user',
-  category: '/category',
-  board: '/board',
-  blocks: '/blocks',
+  code: '/api/code',
+  user: '/api/user',
+  category: '/api/category',
+  board: '/api/board',
+  blocks: '/api/blocks',
 };
 
 export default {

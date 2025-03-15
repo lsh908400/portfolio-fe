@@ -41,7 +41,7 @@ export interface board {
 
 export interface BlockData {
     id: string;
-    type: 'paragraph' | 'header' | 'list' | 'image' | 'title';
+    type: 'paragraph' | 'img' | 'title' | "code";
     index: number;
     data: {
         text?: string;
@@ -51,16 +51,9 @@ export interface BlockData {
         caption?: string;
         style?: 'underline' | 'bold' | 'crooked' | 'cancelline' | 'link' | 'basic'
         color?: string; 
+        imageWidth? : number;
+        imageHeight? : number;
+        language?: string;
+        showLineNumbers?: boolean;
     };
-}
-
-export enum IconHoverEnum {
-    PLUS,
-    BASIC,
-    CROOKED,
-    UNDERLINE,
-    BOLD,
-    CANCELLINE,
-    LINK,
-    COLOR
 }
