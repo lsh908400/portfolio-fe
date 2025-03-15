@@ -456,19 +456,19 @@ export const useEditorBlocks = ({
         setIsOptionBoxOpen({ isOpen: false, id: "" });
     },[blocks, updateBlockData]);
 
-    const dragStartHandler = useCallback((e: React.DragEvent, index: number, id: string) => {
+    const dragStartHandler = useCallback((e: React.DragEvent, index: number) => {
         e.dataTransfer.setData('index', index.toString());
-        e.dataTransfer.setData('blockId', id); 
     }, []);
     
-    const dragEndHandler = useCallback((e: React.DragEvent) => {
+    const dragEndHandler = useCallback(() => {
+
     }, []);
     
     const dragOverHandler = useCallback((e: React.DragEvent) => {
         e.preventDefault();
     }, []);
     
-    const dropHandler = useCallback((e: React.DragEvent, index: number, id: string) => {
+    const dropHandler = useCallback((e: React.DragEvent, index: number) => {
         e.preventDefault();
         const sourceIndex = e.dataTransfer.getData('index');
     
@@ -550,7 +550,7 @@ export const useEditorBlocks = ({
                 onMouseEnter={(e) => blockHoverHandler(e, block.id, index)}
                 onMouseLeave={(e) => blockLeaveHandler(e, index)}
                 onDragOver={dragOverHandler}
-                onDrop={(e)=>dropHandler(e,index,block.id)}
+                onDrop={(e)=>dropHandler(e,index)}
                 className="relative !px-2 rounded group border flex items-center border-transparent"
                 key={block.id}
                 >
@@ -564,7 +564,7 @@ export const useEditorBlocks = ({
                     className={`relative ${
                     hoveredIndex === block.id ? "cursor-pointer" : "invisible"
                     }`}
-                    onDragStart={(e)=>dragStartHandler(e,index,block.id)}
+                    onDragStart={(e)=>dragStartHandler(e,index)}
                     onDragEnd={dragEndHandler}
                     draggable
                 >
