@@ -93,10 +93,6 @@ const TroubleShooting: React.FC = () => {
                 return <EditorTable 
                         tableInfo={tableInfo}
                         setTableInfo={setTableInfo}
-                        loading={loading}
-                        setLoading={setLoading}
-                        error={error}
-                        setError={setError}
                         setContentPageSection={setContentPageSection}
                         setEditorInfo={setEditorInfo}
                         />;
@@ -136,8 +132,6 @@ const TroubleShooting: React.FC = () => {
                 setContentPageSection={setContentPageSection}
                 editMode={editMode}
                 setEditMode={setEditMode}
-                setError={setError}
-                setLoading={setLoading}
             />
             <main className='trouble_content_section bg-white flex-grow flew h-full'>
                 {renderContent}

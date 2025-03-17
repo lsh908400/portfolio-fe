@@ -11,7 +11,7 @@ import React, { useState } from 'react'
 import VariableInfo from '../../util/VariableInfo'
 import useClickHandler from '../../../hooks/useClickHandler';
 import { getIntroduction, getUser, putAdventage, putGoals, putGrowth, putMotivation } from '../../../services/profileService';
-import { introduction, userData } from '../../../types';
+import { introduction } from '../../../types';
 import CommonBtn from '../../util/CommonBtn';
 import useChangeHandler from '../../../hooks/useChangeHandler';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';

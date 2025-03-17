@@ -134,7 +134,7 @@ const EditorTable: React.FC<EditorTableProps> = ({
     });
 
     const getBlocksMutation = useMutation({
-        mutationFn: async ({ id, title }: { id: string, title: string }) => {
+        mutationFn: async ({ id }: { id: string, title: string }) => {
             return await getBlocks(id);
         },
         onSuccess: (response, variables) => {
