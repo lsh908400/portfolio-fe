@@ -1,3 +1,9 @@
+/**
+ * 2025 03 08 - 이상훈
+ * 1. useState - page상태 / 수정모드 / 테이블정보 / 에디터정보 / 카테고리 / 로딩 / 에러
+ * 2. 데이터 전송
+ */
+
 import React, { useEffect, useState, useMemo } from 'react';
 import Editor from '../component/pages/TroubleShooting/Editor';
 import EditorIntro from '../component/pages/TroubleShooting/EditorIntro';
@@ -5,9 +11,10 @@ import EditorTable from '../component/pages/TroubleShooting/EditorTable';
 import { BlockData, category } from '../types';
 import { getCategory } from '../services/categoryService';
 import EditorAside from '../component/pages/TroubleShooting/EditorAside';
+import { CategoryTypeEnum } from '../types/enum';
 
 const TroubleShooting: React.FC = () => {
-    // useState //
+    // 1. useState - page상태 / 수정모드 / 테이블정보 / 에디터정보 / 카테고리 / 로딩 / 에러
     const [contentPageSection, setContentPageSection] = useState<'default' | 'table' | 'editor'>('default');
     const [editMode, setEditMode] = useState<boolean>(false);
     const [tableInfo, setTableInfo] = useState<{
@@ -46,13 +53,13 @@ const TroubleShooting: React.FC = () => {
     });
     
     
-    // fetchData //
+    // 2. 데이터 전송
     useEffect(() => {
         const controller = new AbortController();
         
         const fetchData = async () => {
             try {
-                const categoryResponse = await getCategory().catch(err => {
+                const categoryResponse = await getCategory(CategoryTypeEnum.TROUBLE).catch(err => {
                     setError(prev => ({ 
                         ...prev, 
                         category: err.message || '카테고리 정보를 가져오는데 실패했습니다' 
@@ -96,8 +103,9 @@ const TroubleShooting: React.FC = () => {
             case 'editor': 
                 return <Editor
                         initialData={editorInfo.blockData}
-                        title={editorInfo.title}
                         id={editorInfo.id}
+                        setEditorInfo={setEditorInfo}
+                        editorInfo={editorInfo}
                         />;
             default: 
                 return null;

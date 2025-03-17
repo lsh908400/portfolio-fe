@@ -1,8 +1,13 @@
-// CodeBlockComponent.tsx - 별도의 파일로 분리
+/**
+ * 1. code복사
+ * 2. 코드 입력 (Prism관련으로 따로 관리하는게 더 좋다고 생각해서 따로 뻇다.)
+ * 3. Prism 시점
+ */
+
+
 import React, { useCallback, useEffect, useRef } from 'react';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css';
-// 필요한 언어 파일 import
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-jsx';
@@ -18,60 +23,56 @@ import debounce from 'lodash/debounce';
 
 
 interface CodeBlockProps {
-  block: BlockData;
-  index: number;
-  blockRefs: React.MutableRefObject<Record<string, HTMLElement>>;
-  isOptionBoxOpen: { isOpen: boolean; id: string } | undefined;
-  copySuccess: string;
-  updateBlockData: (index: number, data: any) => void;
-  handleKeyDown: (e: React.KeyboardEvent, index: number) => void;
-  handleInput: (e: React.FormEvent<HTMLDivElement | HTMLElement>, blockId: string) => void;
-  blockHoverHandler: (e: React.MouseEvent, blockId: string, index: number) => void;
-  blockLeaveHandler: (e: React.MouseEvent, index: number) => void;
-  setIsOptionBoxOpen: any;
-  dragOverHandler: (e: React.DragEvent) => void;
-  dropHandler: (e: React.DragEvent, index: number) => void;
-  dragStartHandler: (e: React.DragEvent, index: number) => void;
-  dragEndHandler: (e: React.DragEvent) => void;
-  showMenu: boolean;
-  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
-  changeBlockStyle: (block: BlockData, type: IconHoverEnum) => void
-  changeBlockColor: (color: string, block : BlockData) => void;
-  changeBlockType: (block: BlockData, type: TypeEnum) => void
-  removeBlockHandler: (index : number) => void;
-  setCopySuccess: React.Dispatch<React.SetStateAction<string>>;
+    block: BlockData;
+    index: number;
+    blockRefs: React.MutableRefObject<Record<string, HTMLElement>>;
+    isOptionBoxOpen: { isOpen: boolean; id: string } | undefined;
+    copySuccess: string;
+    updateBlockData: (index: number, data: any) => void;
+    handleKeyDown: (e: React.KeyboardEvent, index: number) => void;
+    handleInput: (e: React.FormEvent<HTMLDivElement | HTMLElement>, blockId: string) => void;
+    blockHoverHandler: (e: React.MouseEvent, blockId: string, index: number) => void;
+    blockLeaveHandler: (e: React.MouseEvent, index: number) => void;
+    setIsOptionBoxOpen: any;
+    dragOverHandler: (e: React.DragEvent) => void;
+    dropHandler: (e: React.DragEvent, index: number) => void;
+    dragStartHandler: (e: React.DragEvent, index: number) => void;
+    dragEndHandler: (e: React.DragEvent) => void;
+    showMenu: boolean;
+    setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
+    changeBlockStyle: (block: BlockData, type: IconHoverEnum) => void
+    changeBlockColor: (color: string, block : BlockData) => void;
+    changeBlockType: (block: BlockData, type: TypeEnum) => void
+    removeBlockHandler: (index : number) => void;
+    setCopySuccess: React.Dispatch<React.SetStateAction<string>>;
 }
 
-
-
-
-
 const CodeBlockComponent: React.FC<CodeBlockProps> = ({
-  block,
-  index,
-  blockRefs,
-  isOptionBoxOpen,
-  copySuccess,
-  updateBlockData,
-  handleKeyDown,
-  blockHoverHandler,
-  blockLeaveHandler,
-  setIsOptionBoxOpen,
-  dragOverHandler,
-  dropHandler,
-  dragStartHandler,
-  dragEndHandler,
-  showMenu,
-  handleInput,
-  setShowMenu,
-  changeBlockStyle,
-  changeBlockColor,
-  changeBlockType,
-  removeBlockHandler,
-  setCopySuccess
+    block,
+    index,
+    blockRefs,
+    isOptionBoxOpen,
+    copySuccess,
+    updateBlockData,
+    handleKeyDown,
+    blockHoverHandler,
+    blockLeaveHandler,
+    setIsOptionBoxOpen,
+    dragOverHandler,
+    dropHandler,
+    dragStartHandler,
+    dragEndHandler,
+    showMenu,
+    handleInput,
+    setShowMenu,
+    changeBlockStyle,
+    changeBlockColor,
+    changeBlockType,
+    removeBlockHandler,
+    setCopySuccess
 }) => {
     const codeRef = useRef<HTMLElement | null>(null);
-    // 코드 복사 기능
+    // 1. code복사
     const handleCopyCode = () => {
         if (block.data.text) {
         navigator.clipboard.writeText(block.data.text)
@@ -85,13 +86,16 @@ const CodeBlockComponent: React.FC<CodeBlockProps> = ({
         }
     };
 
+
+    // 2. 코드 입력 (Prism관련으로 따로 관리하는게 더 좋다고 생각해서 따로 뻇다.)
     const handleCodeInput = useCallback((e:React.FormEvent<HTMLDivElement | HTMLElement>,index:number)=>{
-        const text = (e.target as HTMLElement).innerText;
+        const text = (e.target as HTMLElement).innerHTML;
         
         updateBlockData(index, { text });
     },[])
 
 
+    // 3. Prism 시점
     useEffect(() => {
         const debouncedHighlight = debounce(() => {
         if (codeRef.current && block.type === 'code') {
@@ -102,7 +106,7 @@ const CodeBlockComponent: React.FC<CodeBlockProps> = ({
         debouncedHighlight();
     
         return () => {
-        debouncedHighlight.cancel();
+            debouncedHighlight.cancel();
         };
     }, [block.data.text , block.type , blockHoverHandler]);
 
@@ -145,7 +149,7 @@ const CodeBlockComponent: React.FC<CodeBlockProps> = ({
             />
             )}
         </div>
-        <div className="w-[80%] !px-2 flex flex-col">
+        <div className="max-w-[80%] min-w-[80%] !px-2 flex flex-col">
             {/* 헤더 영역: 언어 선택 및 옵션 */}
             <div className="flex items-center justify-between bg-gray-700 text-white rounded-t">
             {/* 언어 선택 */}
@@ -158,6 +162,7 @@ const CodeBlockComponent: React.FC<CodeBlockProps> = ({
             >
                 <option value="javascript">JavaScript</option>
                 <option value="typescript">TypeScript</option>
+                <option value="jsx">Jsx</option>
                 <option value="html">HTML</option>
                 <option value="css">CSS</option>
                 <option value="java">Java</option>
@@ -204,7 +209,7 @@ const CodeBlockComponent: React.FC<CodeBlockProps> = ({
             
             {/* 코드 입력 영역 */}
             <pre 
-                className={`w-[800px] font-mono text-sm outline-none px-3 py-2 text-gray-200 overflow-x-auto code-area ${
+                className={`max-w-[100%] min-w-[100%] font-mono text-sm outline-none px-3 py-2 text-gray-200 overflow-x-auto code-area ${
                 `language-${block.data.language || 'javascript'}`
                 }`}
                 style={{
@@ -232,7 +237,7 @@ const CodeBlockComponent: React.FC<CodeBlockProps> = ({
                     codeRef.current = el;
                     if (el) blockRefs.current[block.id] = el;
                 }}
-                className="block w-full"
+                className="block w-[800px]"
                 dir="ltr"
                 spellCheck="false"
                 />

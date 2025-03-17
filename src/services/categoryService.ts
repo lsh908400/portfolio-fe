@@ -1,5 +1,6 @@
 import apiConfig from '../config/apiConfig';
 import { category } from '../types';
+import { CategoryTypeEnum } from '../types/enum';
 
 export const postCategory = async (category : category) => {
     try 
@@ -13,10 +14,11 @@ export const postCategory = async (category : category) => {
     }
 };
 
-export const getCategory = async () => {
+export const getCategory = async (type:CategoryTypeEnum) => {
     try 
     {
-        const response = await apiConfig.api.get(`${apiConfig.apiPaths.category}`);
+        if(!type) return;
+        const response = await apiConfig.api.get(`${apiConfig.apiPaths.category}/${type}`);
         return response.data;
     } catch (error) 
     {

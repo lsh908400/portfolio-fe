@@ -18,3 +18,19 @@ export enum TypeEnum {
 }
 
 export const TypeEnumChanger : string[] = ['paragraph','title','img','code']
+
+
+export enum ReactInfoSectionTypeEnum {
+    INTRO,
+    HOOKS,
+    STATE,
+    SSR,
+    TYPESCRIPT,
+    PERFORMANCE,
+}
+
+export enum CategoryTypeEnum {
+    NONE,
+    TROUBLE,
+    REACT
+}

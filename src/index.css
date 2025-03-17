@@ -161,6 +161,12 @@ hr {
   .bg-button-primary{
     background-color: #c9e140;
   }
+
+  .bg-section-aside-primary {
+    background-color: #c9e140;
+    opacity: 0.8;
+  }
+
   .bg-button-sub {
     background-color: #f0f6ce;
     /* background-color: #f4f9d9; */
@@ -221,16 +227,16 @@ hr {
     height: 0;
   }
   .nav_sub_menu_type_introduce.active{
-    height: 150px;
+    height: 90px;
   }
   .nav_sub_menu_type_front_end.active{
-    height: 150px;
+    height: 90px;
   }
   .nav_sub_menu_type_back_end.active{
-    height: 150px;
+    height: 60px;
   }
   .nav_sub_menu_type_study.active{
-    height: 150px;
+    height: 30px;
   }
   .none {
     visibility: hidden;
@@ -267,9 +273,7 @@ hr {
   .trouble_aside_section::-webkit-scrollbar{
     display: none;
   }
-  .editor_section::-webkit-scrollbar{
-    display: none;
-  }
+  
   .profile_section::-webkit-scrollbar{
     display: none;
   }
@@ -277,6 +281,12 @@ hr {
     display: none;
   }
   .icon_box::-webkit-scrollbar{
+    display: none;
+  }
+  .react_info_aside_section::-webkit-scrollbar{
+    display: none;
+  }
+  .mini_project::-webkit-scrollbar{
     display: none;
   }
 

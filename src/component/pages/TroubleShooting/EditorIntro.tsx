@@ -2,7 +2,7 @@ import React from 'react'
 
 const EditorIntro : React.FC = () => {
     return (
-        <section className='editor_intro w-full h-full !p-10 !pb-0 box-border overflow-auto'>
+        <section className='editor_intro w-full h-full !p-10 !pb-0 box-border overflow-auto font-sans'>
             <div className='editor_title'>
                 <p className='text-[2em] font-bold'>페이지 안내</p>
             </div>
@@ -14,17 +14,23 @@ const EditorIntro : React.FC = () => {
                     <p>└── MainContent (메인 콘텐츠 섹션)</p>
                     <p className='!ml-[3em]'>├── Default View</p>
                     <p className='!ml-[3em]'>├── Table View</p>
-                    <p className='!ml-[6em]'>└── CommonTable</p>
+                    <p className='!ml-[6em]'>├── CommonTable</p>
                     <p className='!ml-[6em]'>└── Callback Function을 통해 테이블관리</p>
                     <p className='!ml-[3em]'>└── Editor</p>
                     <p className='!ml-[6em]'>└── useEditorBlocks (커스텀 훅)</p>
-                    <p className='!ml-[6em]'>├── 블록 관리 (추가/삭제/수정)</p>
-                    <p className='!ml-[6em]'>├── 블록 타입 변경</p>
-                    <p className='!ml-[6em]'>└── 블록 렌더링</p>
+                    <p className='!ml-[12em]'>├── EditorOption(옵션관리모달)</p>
+                    <p className='!ml-[12em]'>├── CommonColorPicker(색상변경)</p>
+                    <p className='!ml-[12em]'>└── Menu(타입변경)</p>
+                    <p className='!ml-[9em]'>├── 블록 관리 (추가/삭제/수정/order변경/리사이즈 등등)</p>
+                    <p className='!ml-[9em]'>├── 블록 타입 변경</p>
+                    <p className='!ml-[12em]'>└── 타입별 컴포넌트</p>
+                    <p className='!ml-[9em]'>└── 블록 렌더링</p>
                 </div>
                 <div className='text-[1.2em] !mb-6 font-bold'>2. 데이터베이스 구조</div>
                 <div className='bg-code-black text-white text-code-primary font-bold !p-4 rounded-lg !mb-6'>
-                    추가예정
+                    <p>Category(Mysql)</p>
+                    <p className='!ml-[3em]'>└──Board(Mysql)</p>
+                    <p className='!ml-[6em]'>└──Block(Mongo)</p>
                 </div>
                 <div className='text-[1.2em] !mb-4 font-bold'>3. Aside</div>
                 <ul className='!mb-6'>

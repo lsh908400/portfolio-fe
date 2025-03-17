@@ -1,13 +1,24 @@
+/**
+ * 2025 03 10 - 이상훈
+ * 1. 검색옵션 타입 인터페이스
+ * 2. 버튼 인터페이스
+ * 3. 컬럼 정의 인터페이스
+ * 4. 테이블 컴포넌트 Props 인터페이스 - 검색 / 버튼 / 테이블 / 행 클릭 / 스타일
+ * 5. useState - 검색 상태관리 / 체크박스 상태관리
+ * 6. Handler - 전체 체크박스 / 개별 체크박스 / 검색
+ * 7. useEffect - 체크박스
+ */
+
 import React, { useEffect } from 'react';
 import CommonBtn from './CommonBtn';
 
-// 검색 옵션 타입
+// 1. 검색옵션 타입 인터페이스
 interface SearchOption {
   value: string;
   label: string;
 }
 
-// 버튼 인터페이스
+// 2. 버튼 인터페이스
 interface ButtonProps {
   show: boolean;
   onClick?: () => void;
@@ -15,7 +26,7 @@ interface ButtonProps {
   className?: string;
 }
 
-// 컬럼 정의 인터페이스
+// 3. 컬럼 정의 인터페이스
 interface TableColumn {
   id: string;
   header: string | React.ReactNode;
@@ -25,7 +36,7 @@ interface TableColumn {
   clickable?: boolean; // 셀이 클릭 가능한지 여부
 }
 
-// 테이블 컴포넌트의 Props 인터페이스
+// 4. 테이블 컴포넌트 Props 인터페이스 - 검색 / 버튼 / 테이블 / 행 클릭 / 스타일 
 interface CommonTableProps {
   // 검색 관련 props
   showSearch?: boolean;
@@ -91,14 +102,13 @@ const CommonTable: React.FC<CommonTableProps> = ({
 }) => {
 
   
-  // 검색 상태 관리
+  // 5. useState - 검색 상태관리 / 체크박스 상태관리
   const [searchOption, setSearchOption] = React.useState(defaultSearchOption);
   const [searchKeyword, setSearchKeyword] = React.useState('');
-  
-  // 체크박스 상태 관리
   const [selectedItems, setSelectedItems] = React.useState<(string | number)[]>(checkedItems);
   
-  // 체크박스 전체 선택 처리
+
+  // 6. Handler - 전체 체크박스 / 개별 체크박스 / 검색
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked && data.length > 0) {
       // ID로 가정, 필요에 따라 조정
@@ -110,13 +120,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
       onCheckChange([]);
     }
   };
-
-  useEffect(() => {
-    // checkedItems가 변경될 때 selectedItems 상태 업데이트
-    setSelectedItems(checkedItems);
-  }, [checkedItems]);
   
-  // 개별 체크박스 처리
   const handleSelectItem = (e: React.ChangeEvent<HTMLInputElement>, id: string | number) => {
     let newSelectedItems;
     if (e.target.checked) {
@@ -128,10 +132,16 @@ const CommonTable: React.FC<CommonTableProps> = ({
     onCheckChange(newSelectedItems);
   };
   
-  // 검색 처리
   const handleSearch = () => {
     onSearch(searchOption, searchKeyword);
   };
+
+
+  // 7. useEffect - 체크박스
+  useEffect(() => {
+    setSelectedItems(checkedItems);
+  }, [checkedItems]);
+  
   
   return (
     <div className="common-table-container">

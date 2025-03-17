@@ -54,6 +54,9 @@ const apiPaths = {
   category: '/api/category',
   board: '/api/board',
   blocks: '/api/blocks',
+  tree: '/api/tree',
+  project: '/api/project',
+  timeline: '/api/timeline',
 };
 
 export default {

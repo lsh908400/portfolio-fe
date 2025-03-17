@@ -323,11 +323,9 @@ export const useEditorBlocks = ({
             hasChanges = true;
         }
 
-        // 변경사항이 있을 때만 상태 업데이트
         if (hasChanges) {
             const newBlocks = [...blocks];
             newBlocks[index].data = { ...currentBlock.data, ...newData };
-            console.log(lastSavedFileRef.current)
             updateBlocksAndNotify(newBlocks)
         }
 
@@ -517,7 +515,7 @@ export const useEditorBlocks = ({
     },[updateBlockData]);
 
     const handleInput = useCallback((e: React.FormEvent<HTMLDivElement | HTMLElement>, blockId: string) => {
-        contentRef.current[blockId] = e.currentTarget.textContent || "";
+        contentRef.current[blockId] = e.currentTarget.innerHTML || "";
         
     },[]);
     
@@ -585,13 +583,11 @@ export const useEditorBlocks = ({
                 element.classList.remove('cursor-pointer');
             }
             const currentText = contentRef.current[blockId] || "";
-            // 텍스트가 변경된 경우에만 업데이트
             if (currentText === "") {
                 updateBlockData(index, { text: currentText });
             }
             const prevBlockInfo = removeBlock(index);
 
-            // requestAnimationFrame을 사용하여 DOM 업데이트 후 실행되도록 함
             if (prevBlockInfo) {
                 setIsOptionBoxOpen({
                     isOpen: false,
@@ -601,10 +597,8 @@ export const useEditorBlocks = ({
                 requestAnimationFrame(() => {
                     const { prevBlockId } = prevBlockInfo;
                     if (blockRefs.current[prevBlockId]) {
-                    // 이전 블록으로 포커스 이동
                     blockRefs.current[prevBlockId].focus();
 
-                    // 커서를 텍스트 끝으로 이동 (선택적)
                     const selection = window.getSelection();
                     const range = document.createRange();
                     const el = blockRefs.current[prevBlockId];

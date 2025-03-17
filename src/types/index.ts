@@ -38,7 +38,6 @@ export interface board {
     modifyAt? : string
 }
 
-
 export interface BlockData {
     id: string;
     type: 'paragraph' | 'img' | 'title' | "code";
@@ -56,4 +55,42 @@ export interface BlockData {
         language?: string;
         showLineNumbers?: boolean;
     };
+}
+
+type ItemState = 'start' | 'middle' | 'end';
+
+export interface TreeItemProps {
+    depth: number;
+    state: ItemState;
+    text: string;
+}
+
+export interface tree {
+    id: number;
+    depth: number;
+    state: ItemState;
+    text: string;
+    type: string;
+}
+
+export interface purpose {
+    id: number;
+    text: string;
+    type: string;
+}
+
+export interface project {
+    id: number;
+    name: string;
+    desc: string;
+    img: string;
+}
+
+export interface TimelineEvent {
+    id: string;
+    title: string;
+    date: string;
+    desc: string;
+    category: string;
+    color?: string;
 }

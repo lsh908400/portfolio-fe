@@ -1,3 +1,9 @@
+/**
+ * 2025 03 11 - 이상훈
+ * 1. useState - IconHover , colorPicker
+ * 2. Handler - 호버 엔터 / 리브 / 온클릭
+ */
+
 import React, { useCallback, useState } from 'react'
 import { BlockData } from '../../../../types';
 import CommonColorPicker from '../../../util/CommonColorPicker';
@@ -19,6 +25,8 @@ interface EditorOptionProps {
 const EditorOption : React.FC<EditorOptionProps> = ({
     block,changeBlockStyle,changeBlockColor,changeBlockType,showMenu,setShowMenu,removeBlockHandler
 }) => {
+
+    // 1. useState - IconHover , colorPicker
     const [iconHoverState, setIconHoverState] = useState<{
         type : IconHoverEnum | null,
         state : boolean
@@ -30,6 +38,7 @@ const EditorOption : React.FC<EditorOptionProps> = ({
     const [showPicker, setShowPicker] = useState<boolean>(false);
     
     
+    // 2. Handler - 호버 엔터 / 리브 / 온클릭
     const mouseEnterHandler = useCallback((type : IconHoverEnum)=>{
         setIconHoverState({type,state : true})
     },[iconHoverState])
@@ -37,7 +46,6 @@ const EditorOption : React.FC<EditorOptionProps> = ({
     const mouseLeaveHandler = useCallback((type : IconHoverEnum)=>{
         setIconHoverState({type,state : false})
     },[iconHoverState])
-
 
     const openColorPicker = useCallback((e: React.MouseEvent)=>{
         e.preventDefault();
