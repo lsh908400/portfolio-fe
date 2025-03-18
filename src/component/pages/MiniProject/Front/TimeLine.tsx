@@ -52,11 +52,6 @@ const Timeline: React.FC = () => {
         onSuccess: async (response) => {
             alert(response.message);
             queryClient.invalidateQueries({ queryKey: ['timeline'] });
-            
-            const refreshResponse = await getTimelines();
-            if (refreshResponse.data) {
-                setEvents(refreshResponse.data);
-            }
         },
         onError: (error: any) => {
             console.error('타임라인 추가 중 에러 발생:', error);
@@ -69,11 +64,6 @@ const Timeline: React.FC = () => {
         onSuccess: async (response) => {
             alert(response.message);
             queryClient.invalidateQueries({ queryKey: ['timeline'] });
-
-            const refreshResponse = await getTimelines();
-            if (refreshResponse.data) {
-                setEvents(refreshResponse.data);
-            }
         },
         onError: (error : any) => {
             console.error('타임라인 삭제 중 에러 발생:', error);
@@ -145,6 +135,12 @@ const Timeline: React.FC = () => {
         if(!data) return;
         setEvents(data)
     },[data])
+
+    useEffect(()=>{
+        return () => {
+            queryClient.invalidateQueries({ queryKey: ['timeline'] });
+        }
+    },[])
 
     return (
     <div className="max-w-4xl mx-auto p-6">

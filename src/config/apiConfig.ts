@@ -57,6 +57,7 @@ const apiPaths = {
   tree: '/api/tree',
   project: '/api/project',
   timeline: '/api/timeline',
+  snippet: '/api/snippet',
 };
 
 export default {

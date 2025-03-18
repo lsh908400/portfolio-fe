@@ -94,3 +94,13 @@ export interface TimelineEvent {
     category: string;
     color?: string;
 }
+
+export interface Snippet {
+    id: string;
+    title: string;
+    code: string;
+    language: string;
+    desc: string;
+    tags: string[];
+    createdAt: string;
+}
