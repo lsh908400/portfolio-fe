@@ -328,7 +328,7 @@ const Introduce: React.FC = () => {
             <section className='profile_section bg-introduce-aside-color w-[350px] h-full text-aside-primary overflow-auto'>
                 <article className='side_inner_shell h-full flex items-center flex-col'>
                     <div className='profile_img_box w-[200px] !mt-[60px]'>
-                        <img src={`${import.meta.env.VITE_UPLOAD_PATH}/profile.png`} />
+                        <img src={`${import.meta.env.VITE_API_URL}/uploads/profile.png`} />
                     </div>
                     <div className='info_box w-full !mb-[60px]'>
                         <VariableInfo
