@@ -964,8 +964,6 @@ export const useEditorBlocks = ({
         const getImageUrl = (url: string) => {
             if (url.startsWith('data:')) {
                 return url;
-            } else if (url.startsWith('/uploads/')) {
-                return url;
             } else {
                 return `${import.meta.env.VITE_API_URL}/uploads/${url.split('/').pop()}`;
             }
