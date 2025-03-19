@@ -227,7 +227,7 @@ hr {
     height: 0;
   }
   .nav_sub_menu_type_introduce.active{
-    height: 90px;
+    height: 60px;
   }
   .nav_sub_menu_type_front_end.active{
     height: 90px;
@@ -245,8 +245,10 @@ hr {
     display: none;
   }
   .nav_sub_menu.active{
-    background-color: #c2c2c2;
+    background-color: #c9e140;
     color: #333;
+    padding: 2px;
+    border-radius: 5px;
   }
 
   /* header btn effect */

@@ -17,6 +17,7 @@ import TimeLine from '../component/pages/MiniProject/Front/TimeLine';
 import CodeSnipet from '../component/pages/MiniProject/Front/CodeSnipet';
 import Loading from '../component/util/Loading';
 import ErrorMessage from '../component/util/ErrorMessage';
+import ManageFile from '../component/pages/MiniProject/Front/ManageFile';
 
 const MiniProject: React.FC = () => {
     // 1. searchParams - 타입
@@ -52,6 +53,8 @@ const MiniProject: React.FC = () => {
                 return <TimeLine />
             case 3:
                 return <CodeSnipet />
+            case 4:
+                return <ManageFile />
             default:
                 return null;
         }
@@ -88,7 +91,7 @@ const MiniProject: React.FC = () => {
         <section id='mini_project' className='w-full h-full font-sans !p-4 overflow-auto'>
             <div className='text-[2em] font-bold flex gap-10'>
                 {contentPageSection &&
-                    <div><i onClick={() => setContentPageSection(null)} className='fa-solid fa-arrow-left cursor-pointer opacity-70 hover:opacity-100'></i></div>
+                    <div><i onClick={() => setContentPageSection(null)} className='fa-solid fa-arrow-left cursor-pointer opacity-70 hover:opacity-100 hover:-translate-x-1'></i></div>
                 }
                 <div>{type === '1' ? 'Front ' : 'Back '}Mini-Project</div>
             </div>

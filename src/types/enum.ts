@@ -34,3 +34,20 @@ export enum CategoryTypeEnum {
     TROUBLE,
     REACT
 }
+
+export enum PrevProSectionTypeEnum {
+    NONE,
+    LOTTE,
+    PLANTRY,
+    FARMSTORY
+}
+
+export enum HomeDescTypeEnum {
+    NONE,
+    CODE,
+    ASIDE,
+    INTRODUCE,
+    BEFE,
+    STUDY,
+    MINI
+}

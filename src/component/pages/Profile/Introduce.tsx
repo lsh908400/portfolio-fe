@@ -31,7 +31,7 @@ const Introduce: React.FC = () => {
         queryFn: async () => {
             const response = await getUser();
             return response.data;
-        }
+        },
     });
 
     const { 

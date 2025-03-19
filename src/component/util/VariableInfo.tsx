@@ -51,26 +51,26 @@ const VariableInfo: React.FC<VariableInfoProps> = ({
   // 각 필드 유형에 따른 렌더링 함수
   const renderField = (field: FieldConfig, index: number) => {
     const {
-      type,
-      id: fieldId,
-      className: fieldClassName = '',
-      label,
-      value,
-      placeholder,
-      options,
-      onChange,
-      onClick,
-      onKeyDown,
-      children,
-      style: fieldStyle,
-      infoDivClassName,
-      min ,
-      max ,
-      steps = 10,
-      filledSteps = 0,
-      blockWidth,
-      blockHeight,
-      ...rest
+        type,
+        id: fieldId,
+        className: fieldClassName = '',
+        label,
+        value,
+        placeholder,
+        options,
+        onChange,
+        onClick,
+        onKeyDown,
+        children,
+        style: fieldStyle,
+        infoDivClassName,
+        min ,
+        max ,
+        steps = 10,
+        filledSteps = 0,
+        blockWidth,
+        blockHeight,
+        ...rest
     } = field;
 
     // 필드 컨테이너

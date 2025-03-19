@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Prism from 'prismjs';
 // 기본 테마
 import 'prismjs/themes/prism-tomorrow.css';
@@ -39,6 +39,9 @@ const CodeModal: React.FC<CodeModalProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [contentArray, setContentArray] = useState<Array<{name: string, content: string}>>([]);
   
+  const modalRef = useRef<HTMLDivElement>(null);
+  const codeContainerRef = useRef<HTMLDivElement>(null);
+
   // 초기 설정
   useEffect(() => {
     if (isOpen) {
@@ -50,6 +53,11 @@ const CodeModal: React.FC<CodeModalProps> = ({
         setEditableContent(content || '');
       }
       setCurrentIndex(0);
+      
+      // 모달이 열릴 때도 스크롤 초기화
+      if (modalRef.current) {
+        modalRef.current.scrollTop = 0;
+      }
     }
   }, [isOpen, content, title]);
 
@@ -58,10 +66,39 @@ const CodeModal: React.FC<CodeModalProps> = ({
     if (isOpen) {
       const timer = setTimeout(() => {
         Prism.highlightAll();
-      }, 0);
+        
+        // 하이라이팅 후 스크롤 조정 (타이밍 조정)
+        if (modalRef.current) {
+          modalRef.current.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
+      }, 50); // 시간을 약간 늘려서 하이라이팅이 완료될 시간을 확보
+      
       return () => clearTimeout(timer);
     }
   }, [isOpen, editableContent, currentIndex]);
+
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+      });
+    }
+    
+    const timer = setTimeout(() => {
+      if (modalRef.current) {
+        modalRef.current.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+    
+    return () => clearTimeout(timer);
+  }, [currentIndex, editableContent]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(editableContent);
@@ -101,7 +138,8 @@ const CodeModal: React.FC<CodeModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="code_modal bg-white rounded-lg p-6 !pt-0 !pb-0 w-2/3 max-h-[80vh] overflow-scroll scrollbar-none">
+      {/* modalRef 추가 */}
+      <div ref={modalRef} className="code_modal bg-white rounded-lg p-6 !pt-0 !pb-0 w-2/3 max-h-[80vh] overflow-scroll scrollbar-none">
         <div className="flex justify-between items-center pb-4 sticky top-0 left-0 z-50 bg-white !pt-6">
           <h2 className="text-xl font-bold text-gray-800">{currentTitle}</h2>
           <div>
@@ -150,7 +188,8 @@ const CodeModal: React.FC<CodeModalProps> = ({
           </div>
         )}
         
-        <div className="overflow-auto">
+        {/* codeContainerRef 유지 */}
+        <div ref={codeContainerRef} className="overflow-auto">
           <pre className="line-numbers">
             <code className={`language-${prismLanguage}`}>{editableContent}</code>
           </pre>

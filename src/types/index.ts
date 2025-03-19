@@ -104,3 +104,16 @@ export interface Snippet {
     tags: string[];
     createdAt: string;
 }
+
+export interface Folder {
+    name : string;
+    path : string;
+    maxSizeBytes : number;
+    maxSizeFormatted : string;
+}
+
+export interface File {
+    name : string;
+    path : string;
+    ext : string;
+}

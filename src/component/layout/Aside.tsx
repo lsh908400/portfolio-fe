@@ -35,7 +35,6 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
     const bIsClickedNavIntroduce = target.classList.contains('nav_menu_type_introduce')
     const bIsClickedNavProfile = target.classList.contains('nav_sub_menu_type_profile')
     const bIsClickedNavPrev = target.classList.contains('nav_sub_menu_type_prev')
-    const bIsClickedJob = target.classList.contains('nav_sub_menu_type_job')
 
     const bIsClickedNavFrontEnd = target.classList.contains('nav_menu_type_front_end')
     const bIsClickedReactInfo = target.classList.contains('nav_sub_menu_type_react')
@@ -87,14 +86,6 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
         defaultSectionConvertSubFunction();
         target.classList.add('active')
         navigation('/prevproject')
-        inactive();
-        break;
-      } 
-      case bIsClickedJob :
-      {
-        defaultSectionConvertSubFunction();
-        target.classList.add('active')
-        navigation('/job')
         inactive();
         break;
       } 
@@ -238,8 +229,7 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
         break;
       }
     }
-    
-    
+
   });
 
   const defaultSectionConvertSubFunction = () => {
@@ -259,7 +249,7 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
   return (
     <aside 
           id="aside" 
-          className='aside-overlay bg-aside-primary overflow-scroll'
+          className='aside-overlay bg-gray overflow-scroll'
           style={{
             position: 'absolute',
             top: 0,
@@ -270,48 +260,55 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
             transition: 'transform 0.5s ease'
           }}
     >
-      <section id='nav' className='!mt-[80px] !p-[10px] text-aside-primary w-full flex flex-col gap-[30px] !py-[50px] border-b border-t'>
+      <section className='!mb-2 !mt-10 !p-[10px] font-sans flex flex-col gap-4'>
+        <p className='font-bold'>안녕하십니까</p>
+        <p className='text-[0.8em]'>알지 못함의 깊이를 항해하는 개발자</p>
+        <p className='text-[0.8em]'>이상훈의 포트폴리오 사이트입니다.</p>
+        <div onClick={()=>{navigation('/'); inactive();}} className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-red-600 bg-white hover:bg-gray-100 cursor-pointer">
+          <span className="mr-2"><i className='fa-solid fa-home text-gray-700'></i></span> 사이트 이용가이드
+        </div>
+      </section>
+      <section id='nav' className='!mt-[20px] !p-[10px] text-black w-full flex flex-col gap-[30px] !py-[50px] border-b border-gray-400 border-t'>
         <nav className='w-full'>
           <ul className='w-full'>
-            <li onClick={handleClick} className='nav_menu_type_introduce font-bold bg-header-primary-hover rounded-[5px] cursor-pointer text-nowrap'>• Introduce</li>
+            <li onClick={handleClick} className='nav_menu_type_introduce font-bold hover-aside-primary rounded-[5px] cursor-pointer text-nowrap'>• Introduce</li>
             <ul className='w-full h-auto !p-[5px] none nav_sub_menu_type nav_sub_menu_type_introduce flex flex-col gap-[5px]'>
-              <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b nav_sub_menu_type_profile'>• Profile</li>
-              <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b nav_sub_menu_type_prev'>• Prev-Project</li>
-              <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b nav_sub_menu_type_job'>• Prev-Job-experience</li>
+              <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_profile'>• Profile</li>
+              <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_prev'>• Prev-Project</li>
             </ul>
           </ul>
         </nav>
         <nav className='w-full'>
           <ul className='w-full'>
-            <li onClick={handleClick} className='nav_menu_type_front_end font-bold bg-header-primary-hover rounded-[5px] cursor-pointer'>• FrontEnd</li>
+            <li onClick={handleClick} className='nav_menu_type_front_end font-bold hover-aside-primary rounded-[5px] cursor-pointer'>• FrontEnd</li>
             <ul className='w-full h-auto !p-[5px] none nav_sub_menu_type nav_sub_menu_type_front_end flex flex-col gap-[5px]'>
-              <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b nav_sub_menu_type_react'>• React</li>
-              <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b nav_sub_menu_type_vanila'>• Vanila Js</li>
-              <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b nav_sub_menu_type_thyme'>• ThymeLeaf</li>
+              <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_react'>• React</li>
+              <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_vanila'>• Vanila Js</li>
+              <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_thyme'>• ThymeLeaf</li>
               
             </ul>
           </ul>
         </nav>
         <nav className='w-full'>
           <ul className='w-full'>
-            <li onClick={handleClick} className='nav_menu_type_back_end font-bold bg-header-primary-hover rounded-[5px] cursor-pointer'>• BackEnd</li>
+            <li onClick={handleClick} className='nav_menu_type_back_end font-bold hover-aside-primary rounded-[5px] cursor-pointer'>• BackEnd</li>
             <ul className='w-full h-auto !p-[5px] none nav_sub_menu_type nav_sub_menu_type_back_end flex flex-col gap-[5px]'>
-              <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b nav_sub_menu_type_spring_boot'>Spring Boot</li>
-              <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer border-b nav_sub_menu_type_node'>Node Js</li>
+              <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_spring_boot'>Spring Boot</li>
+              <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_node'>Node Js</li>
             </ul>
           </ul>
         </nav>
         <nav className='w-full'>
           <ul className='w-full'>
-            <li onClick={handleClick} className='nav_menu_type_study font-bold bg-header-primary-hover rounded-[5px] cursor-pointer'>• Study</li>
+            <li onClick={handleClick} className='nav_menu_type_study font-bold hover-aside-primary rounded-[5px] cursor-pointer'>• Study</li>
             <ul className='w-full h-auto !p-[5px] none nav_sub_menu_type nav_sub_menu_type_study flex flex-col gap-[5px]'>
-              <li onClick={handleClick} className='nav_sub_menu nav_sub_menu_type_trouble bg-header-primary-hover cursor-pointer border-b'>• Troubleshooting</li>
+              <li onClick={handleClick} className='nav_sub_menu nav_sub_menu_type_trouble hover-aside-primary border-gray-400 cursor-pointer border-b'>• Troubleshooting</li>
             </ul>
           </ul>
         </nav>
         <nav className='w-full'>
           <ul className='w-full'>
-            <li onClick={handleClick} className='nav_sub_menu bg-header-primary-hover cursor-pointer nav_sub_menu_type_mini_project text-white'>• Mini Project</li>
+            <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer nav_sub_menu_type_mini_project text-black font-bold'>• Mini Project</li>
           </ul>
         </nav>
         
