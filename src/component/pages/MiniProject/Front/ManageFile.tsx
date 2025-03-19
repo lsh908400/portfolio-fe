@@ -244,7 +244,7 @@ const ManageFile : React.FC = () => {
                             <i className='fa-solid fa-minus'></i>
                         </div>
                     }
-                    <img src='/public/assets/folder.png'></img>
+                    <img src={`${import.meta.env.VITE_API_URL}/uploads/folder.png`}></img>
                     <div>{v.name}</div>
                     <div>{v.maxSizeFormatted}</div>
                 </div>
