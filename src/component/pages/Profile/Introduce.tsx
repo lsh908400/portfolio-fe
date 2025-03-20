@@ -113,7 +113,7 @@ const Introduce: React.FC = () => {
                     if (localIntroduction?.motivation) {
                         motivationMutation.mutate(localIntroduction.motivation, {
                             onSuccess: (response) => {
-                                alert(response.data);
+                                alert(response.message);
                             },
                             onError: (error: any) => {
                                 console.error('동기 업데이트 중 오류:', error);
@@ -139,7 +139,7 @@ const Introduce: React.FC = () => {
                     if (localIntroduction?.growth) {
                         growthMutation.mutate(localIntroduction.growth, {
                             onSuccess: (response) => {
-                                alert(response.data);
+                                alert(response.message);
                             },
                             onError: (error: any) => {
                                 console.error('성장과정 업데이트 중 오류:', error);
@@ -165,7 +165,7 @@ const Introduce: React.FC = () => {
                     if (localIntroduction?.adventage) {
                         adventageMutation.mutate(localIntroduction.adventage, {
                             onSuccess: (response) => {
-                                alert(response.data);
+                                alert(response.message);
                             },
                             onError: (error: any) => {
                                 console.error('장단점 업데이트 중 오류:', error);
@@ -191,7 +191,7 @@ const Introduce: React.FC = () => {
                     if (localIntroduction?.goals) {
                         goalsMutation.mutate(localIntroduction.goals, {
                             onSuccess: (response) => {
-                                alert(response.data);
+                                alert(response.message);
                             },
                             onError: (error: any) => {
                                 console.error('포부 업데이트 중 오류:', error);

@@ -30,14 +30,14 @@ const HomeIntroduce : React.FC = () => {
             <h3 className="text-xl font-semibold text-white mb-3">2. 상태 관리 계층 (State Layer)</h3>
             <ul className="list-disc pl-6 space-y-2">
                 <li>
-                <span className="font-medium">로컬 UI 상태</span>: React의 <code className="bg-black px-1 rounded">useState</code>로 관리
+                <span className="font-medium">로컬 UI 상태</span>: React의 <code className="bg-red-100 text-black px-1 rounded">useState</code>로 관리
                 <ul className="list-circle pl-5 mt-1">
                     <li>편집 모드 상태   (<code className="bg-red-100 text-black px-1 rounded">isEditing</code>)</li>
                     <li>로컬 데이터 캐싱 (<code className="bg-red-100 text-black px-1 rounded">localIntroduction</code>)</li>
                 </ul>
                 </li>
                 <li>
-                <span className="font-medium">React Query의 상태 동기화</span>: <code className="bg-black px-1 rounded">useEffect</code>를 통해 서버 데이터와 로컬 상태 동기화
+                <span className="font-medium">React Query의 상태 동기화</span>: <code className="bg-red-100 text-black px-1 rounded">useEffect</code>를 통해 서버 데이터와 로컬 상태 동기화
                 </li>
             </ul>
             </div>

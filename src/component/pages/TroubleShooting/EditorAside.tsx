@@ -24,6 +24,7 @@ interface EditorProps {
     setContentPageSection: React.Dispatch<React.SetStateAction<'default' | 'table' | 'editor'>>;
     editMode: boolean;
     setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+    contentPageSection: 'default' | 'table' | 'editor';
 }
 
 const EditorAside: React.FC<EditorProps> = ({
@@ -33,6 +34,7 @@ const EditorAside: React.FC<EditorProps> = ({
     setContentPageSection,
     editMode,
     setEditMode,
+    contentPageSection
 }) => {
     const queryClient = useQueryClient();
 
@@ -67,7 +69,7 @@ const EditorAside: React.FC<EditorProps> = ({
     const postCategoryMutation = useMutation({
         mutationFn: (newCategory: category) => postCategory(newCategory),
         onSuccess: async (response) => {
-            alert(response.data);
+            alert(response.message);
             queryClient.invalidateQueries({ queryKey: ['categories', CategoryTypeEnum.TROUBLE] });
             
             const refreshedCategoriesResponse = await getCategory(CategoryTypeEnum.TROUBLE);
@@ -158,7 +160,7 @@ const EditorAside: React.FC<EditorProps> = ({
     };
 
     const convertBoardTableMode = async (id: string | null | undefined, title: string, icon?: string) => {
-        if (editMode) return;
+        if (editMode || (id === selectedCategoryId) && contentPageSection==='table') return;
         setContentPageSection('table');
         
         setSelectedCategoryId(id);

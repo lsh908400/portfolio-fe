@@ -20,6 +20,7 @@ import PostBoardModal from './Modal/PostBoardModal';
 import DeleteBoardModal from './Modal/DeleteModal';
 import { getBlocks } from '../../../services/blockService';
 import Loading from '../../util/Loading';
+import _ from 'lodash';
 
 interface TableInfoType {
     id: string;
@@ -236,6 +237,10 @@ const EditorTable: React.FC<EditorTableProps> = ({
             }));
         }
     }, [isQueryLoading, boardsData]);
+
+    useEffect(()=>{
+        console.log(tableInfo)
+    },[tableInfo])
     
     useEffect(() => {
         if (isQueryError && queryError) {

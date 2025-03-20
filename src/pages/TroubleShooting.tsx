@@ -130,6 +130,7 @@ const TroubleShooting: React.FC = () => {
                 setCategory={setCategory}
                 setTableInfo={setTableInfo}
                 setContentPageSection={setContentPageSection}
+                contentPageSection={contentPageSection}
                 editMode={editMode}
                 setEditMode={setEditMode}
             />
