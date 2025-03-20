@@ -49,3 +49,20 @@ export const deleteFolder = async (name : string, path: string) => {
         throw err;
     }
 }
+
+export const uploadFolder = async (formData : FormData) => {
+    try
+    {
+        const response =await apiConfig.api.post(`${apiConfig.apiPaths.folder}/upload`,formData,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        return response.data;
+    }
+    catch(err)
+    {
+        console.error(err)
+        throw err;
+    }
+}

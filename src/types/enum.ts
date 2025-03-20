@@ -51,3 +51,9 @@ export enum HomeDescTypeEnum {
     STUDY,
     MINI
 }
+
+export enum FileTypeEnum {
+    NONE,
+    JPG,
+    TXT,
+}

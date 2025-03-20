@@ -112,7 +112,7 @@ export interface Folder {
     maxSizeFormatted : string;
 }
 
-export interface File {
+export interface Files {
     name : string;
     path : string;
     ext : string;

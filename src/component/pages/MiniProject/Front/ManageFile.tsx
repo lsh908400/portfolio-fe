@@ -1,18 +1,19 @@
 /**
  * 2025 03 18 - 이상훈
- * 1. useState - 폴더 / 파일 / 상위경로 / 모달상태 / Submit폼
- * 2. useQuery - 유저 / 폴더
- * 3. mutation - 폴더 등록 / 삭제 
- * 4. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기
- * 5. modal - 등록 모달 / 업로드 모달 /
- * 6. useEffect - 폴더 정렬 / 초기설정 및 초기화
+ * 1. useState - 폴더 / 파일 / 업로드 파일정보 / 상위경로 / 모달상태 / Submit폼
+ * 2. useRef - 업로드 인풋
+ * 3. useQuery - 유저 / 폴더
+ * 4. mutation - 폴더 등록 / 삭제 / 업로드
+ * 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리
+ * 6. modal - 등록 모달 / 업로드 모달 /
+ * 7. useEffect - 폴더 정렬 / 초기설정 및 초기화
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { getUser } from '../../../../services/profileService';
-import { deleteFolder, getFolder, postFolder } from '../../../../services/folderService';
-import { File, Folder } from '../../../../types';
+import { deleteFolder, getFolder, postFolder, uploadFolder } from '../../../../services/folderService';
+import { Files, Folder } from '../../../../types';
 import Loading from '../../../util/Loading';
 import ErrorMessage from '../../../util/ErrorMessage';
 import CommonBtn from '../../../util/CommonBtn';
@@ -24,10 +25,15 @@ import * as pathJoin from 'path-browserify';
 const ManageFile : React.FC = () => {
     const queryClient = useQueryClient();
 
-    // 1. useState - 폴더 / 파일 / 상위경로 / 모달상태 / Submit폼
+    // 1. useState - 폴더 / 파일 / 업로드 파일정보 / 상위경로 / 모달상태 / Submit폼
     const [folderId,setFolderId] = useState<string>();
     const [folder, setFolder] = useState<Folder[]>();
-    const [file, setFile] = useState<File[]>();
+    const [file, setFile] = useState<Files[]>();
+    const [folderInfo, setFolderInfo] = useState<{
+        name: string;
+        fileCount: number;
+        files: File[];
+    } | null>(null);
     const [superDir, setSuperDir] = useState<{
         isSuper : boolean,
         dir : string
@@ -45,7 +51,11 @@ const ManageFile : React.FC = () => {
     });
 
 
-    // 2. useQuery - 유저 / 폴더
+    // 2. useRef - 업로드 인풋
+    const uploadRef = useRef<HTMLInputElement>(null);
+
+
+    // 3. useQuery - 유저 / 폴더
     const { data: userData, isLoading: isUserLoading, isError: isUserError,} = useQuery({
         queryKey: ['user'],
         queryFn: async () => {
@@ -65,7 +75,7 @@ const ManageFile : React.FC = () => {
     })
 
 
-    // 3. mutation - 폴더 등록 / 삭제 
+    // 4. mutation - 폴더 등록 / 삭제 / 업로드
     const postFolderMutation = useMutation({
         mutationKey : ['folder',folderId],
         mutationFn: async () => {
@@ -97,8 +107,27 @@ const ManageFile : React.FC = () => {
         }
     })
 
+    const uploadMutation = useMutation({
+        mutationKey : ['upload'],
+        mutationFn : async (formData : FormData) => {
+            const response = await uploadFolder(formData)
+            alert(response.message) 
+            return;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['folder', folderId] });
+            setFolderInfo({
+                name : '',
+                fileCount : 0,
+                files : []
+            })
+            setModalState({...modalState, upload : false})
 
-    // 4. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기
+        }
+    })
+
+
+    // 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리
     const postFolderHandler = () => {
         postFolderMutation.mutate();
     }
@@ -154,8 +183,51 @@ const ManageFile : React.FC = () => {
         }
     }
 
+    const postUploadHandler = () => {
+        const files = uploadRef.current?.files;
+    
+        if (files && files.length > 0) {
+            // 폴더 이름 추출 (첫 번째 파일의 경로에서)
+            const firstFilePath = files[0].webkitRelativePath;
+            const folderName = firstFilePath.split('/')[0];
+            
+            const formData = new FormData();
+            formData.append('folderName', folderName); // 폴더 이름 전달
+            formData.append('folderPath', folderId ? folderId : '');
+            // 각 파일을 FormData에 추가
+            Array.from(files).forEach(file => {
+                // 폴더 내부 경로를 그대로 유지
+                formData.append('files', file, file.webkitRelativePath);
+            });
 
-    // 5. modal - 등록 모달 / 업로드 모달 /
+            for (const pair of formData.entries()) {
+                console.log(pair[0], pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]);
+            }
+
+            uploadMutation.mutate(formData);
+        }
+    }
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        
+        if (files && files.length > 0) {
+            // 첫 번째 파일의 경로에서 폴더 이름 추출
+            const firstFilePath = files[0].webkitRelativePath;
+            const folderName = firstFilePath.split('/')[0];
+            
+            setFolderInfo({
+                name: folderName,
+                fileCount: files.length,
+                files: Array.from(files)
+            });
+        } else {
+            setFolderInfo(null);
+        }
+    };
+
+
+    // 6. modal - 등록 모달 / 업로드 모달 /
     const postFolderModal = () => {
         flushSync(()=>{
             setPostFolderForm({...postFolderForm, maxSizeBytes : 10485760})
@@ -168,11 +240,11 @@ const ManageFile : React.FC = () => {
     }
 
 
-    // 6. useEffect - 폴더 정렬 / 초기설정 및 초기화
+    // 7. useEffect - 폴더 정렬 / 초기설정 및 초기화
     useEffect(()=>{
         if(!folderData) return;
         const folderArray : Folder[] = [];
-        const fileArray : File[] = [];
+        const fileArray : Files[] = [];
         folderData.map((v:any)=>{
             if(v.isDirectory)
             {
@@ -207,7 +279,6 @@ const ManageFile : React.FC = () => {
             queryClient.invalidateQueries({ queryKey: ['user'] });
         }
     },[userData])
-
 
 
 
@@ -291,6 +362,53 @@ const ManageFile : React.FC = () => {
                     },
                 ]}
                 />
+            </CommonModal>
+            <CommonModal 
+                isOpen={modalState.upload}
+                onClose={()=>setModalState(prev => ({...prev, upload : false}))}
+                title='업로드'
+                onConfirm={postUploadHandler}
+                className='w-[350px] h-[500px] overflow-auto !p-2'
+            >
+                <div className="p-4">
+                    <div className='flex justify-between items-center !mt-10 text-[1em]'>
+                        <label className="w-[80px] font-bold">업로드</label>
+                        <i 
+                            onClick={() => {uploadRef.current?.click()}} 
+                            className="fa-solid fa-upload text-[1.2em] cursor-pointer"
+                        ></i>
+                        <input
+                            ref={uploadRef}
+                            type='file'
+                            // @ts-ignore
+                            webkitdirectory="true"
+                            directory="true"
+                            multiple
+                            className="hidden"
+                            onChange={handleFileChange}
+                        />
+                    </div>
+
+                    {/* 선택된 폴더 정보 표시 */}
+                    {folderInfo && (
+                        <div className="!mt-12 p-4 border rounded">
+                            <p>폴더명: <span className="font-medium">{folderInfo.name}</span></p>
+                            <p>파일 개수: <span className="font-medium">{folderInfo.fileCount}개</span></p>
+                            
+                            {/* 선택적으로 파일 목록 표시 */}
+                            <div className="mt-2">
+                                <p className="font-medium mb-1">파일 목록:</p>
+                                <ul className="max-h-40 overflow-y-auto text-sm">
+                                    {folderInfo.files.map((file, index) => (
+                                        <li key={index} className="truncate">
+                                            {file.webkitRelativePath}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    )}
+                </div>
             </CommonModal>
         </section>
     )
