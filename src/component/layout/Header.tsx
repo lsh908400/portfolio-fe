@@ -164,7 +164,7 @@ const Header: React.FC<HeaderProps> = ({ domRef }) => {
           }
         } catch (err) {
           console.error('소스 코드 가져오기 오류:', err);
-          alert('소스 코드 가져오기 중 오류가 발생했습니다.');
+          alert('코드 업데이트 권한이 없습니다.');
         } finally {
           setIsLoading(false);
         }
