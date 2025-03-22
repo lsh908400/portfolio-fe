@@ -40,7 +40,6 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
     const bIsClickedReactInfo = target.classList.contains('nav_sub_menu_type_react')
     const bIsClickedVanilaInfo = target.classList.contains('nav_sub_menu_type_vanila')
     const bIsClickedFrontMini = target.classList.contains('nav_sub_menu_type_mini_project')
-    const bIsClickedThymeLeaf = target.classList.contains('nav_sub_menu_type_thyme')
 
     const bIsClickedNavBackEnd = target.classList.contains('nav_menu_type_back_end')
     const bIsClickedSpringBoot = target.classList.contains('nav_sub_menu_type_spring_boot')
@@ -48,6 +47,8 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
 
     const bIsClickedNavStudy = target.classList.contains('nav_menu_type_study')
     const bIsClickedNavTrouble = target.classList.contains('nav_sub_menu_type_trouble')
+
+    const bIsClickedNavVersion = target.classList.contains('nav_sub_menu_type_version')
 
     switch(true)
     {
@@ -128,14 +129,6 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
         inactive();
         break;
       }
-      case bIsClickedThymeLeaf :
-      {
-        defaultSectionConvertSubFunction();
-        target.classList.add('active')
-        navigation('/study?type=6')
-        inactive();
-        break;
-      }
       case bIsClickedFrontMini :
       {
         const allMenues = domRef?.querySelectorAll('.nav_sub_menu_type')
@@ -149,6 +142,22 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
         })
         target.classList.add('active')
         navigation('/mini?type=1')
+        inactive();
+        break;
+      }
+      case bIsClickedNavVersion :
+      {
+        const allMenues = domRef?.querySelectorAll('.nav_sub_menu_type')
+        allMenues?.forEach((v)=> {
+            v.classList.add('none');
+            v.classList.remove('active');
+          })
+        const allSubMenues = domRef?.querySelectorAll('.nav_sub_menu')
+          allSubMenues?.forEach((v)=> {
+            v.classList.remove('active');
+        })
+        target.classList.add('active')
+        navigation('/version')
         inactive();
         break;
       }
@@ -284,8 +293,6 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
             <ul className='w-full h-auto !p-[5px] none nav_sub_menu_type nav_sub_menu_type_front_end flex flex-col gap-[5px]'>
               <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_react'>• React</li>
               <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_vanila'>• Vanila Js</li>
-              <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer border-b border-gray-400 nav_sub_menu_type_thyme'>• ThymeLeaf</li>
-              
             </ul>
           </ul>
         </nav>
@@ -306,9 +313,14 @@ const Aside: React.FC<AsideProps> = React.memo(({}) => {
             </ul>
           </ul>
         </nav>
-        <nav className='w-full'>
+        <nav className='w-full !mb-2'>
           <ul className='w-full'>
             <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer nav_sub_menu_type_mini_project text-black font-bold'>• Mini Project</li>
+          </ul>
+        </nav>
+        <nav className='w-full'>
+          <ul className='w-full'>
+            <li onClick={handleClick} className='nav_sub_menu hover-aside-primary cursor-pointer nav_sub_menu_type_version text-black font-bold'>• Version History</li>
           </ul>
         </nav>
         

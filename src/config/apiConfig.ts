@@ -59,6 +59,7 @@ const apiPaths = {
   timeline: '/api/timeline',
   snippet: '/api/snippet',
   folder: '/api/folder',
+  version : '/api/version',
 };
 
 export default {

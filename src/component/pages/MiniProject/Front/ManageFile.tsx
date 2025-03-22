@@ -4,7 +4,7 @@
  * 2. useRef - 업로드 인풋
  * 3. useQuery - 유저 / 폴더
  * 4. mutation - 폴더 등록 / 삭제 / 업로드
- * 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리
+ * 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리 / 확장자별 이미지 변환 / 파일 열기
  * 6. modal - 등록 모달 / 업로드 모달 /
  * 7. useEffect - 폴더 정렬 / 초기설정 및 초기화
  */
@@ -127,7 +127,7 @@ const ManageFile : React.FC = () => {
     })
 
 
-    // 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리
+    // 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리 / 확장자별 이미지 변환 / 파일 열기
     const postFolderHandler = () => {
         postFolderMutation.mutate();
     }
@@ -226,6 +226,50 @@ const ManageFile : React.FC = () => {
         }
     };
 
+    const getImageSourceUrl = (ext : string) => {
+        switch (ext.toLowerCase()) {
+            case 'pdf':
+                return `${import.meta.env.VITE_API_URL}/uploads/pdf-icon.png`;
+            case 'doc':
+            case 'docx':
+                return `${import.meta.env.VITE_API_URL}/uploads/word-icon.png`;
+            case 'xls':
+            case 'xlsx':
+                return `${import.meta.env.VITE_API_URL}/uploads/excel-icon.png`;
+            case 'ppt':
+            case 'pptx':
+                return `${import.meta.env.VITE_API_URL}/uploads/powerpoint-icon.png`;
+            case 'jpg':
+            case 'jpeg':
+                return `${import.meta.env.VITE_API_URL}/uploads/jpg-icon.png`;
+            case 'png':
+                return `${import.meta.env.VITE_API_URL}/uploads/png-icon.png`;
+            case 'gif':
+                return `${import.meta.env.VITE_API_URL}/uploads/gif-icon.png`;
+            case 'bmp':
+                return `${import.meta.env.VITE_API_URL}/uploads/bmp-icon.png`;
+            case 'zip':
+            case 'rar':
+                return `${import.meta.env.VITE_API_URL}/uploads/zip-icon.png`;
+            case '7z':
+                return `${import.meta.env.VITE_API_URL}/uploads/7z-icon.png`;
+            case 'txt':
+                return `${import.meta.env.VITE_API_URL}/uploads/txt-icon.png`;
+        }
+    }
+
+    const handleFileOpen = (file: Files) => {
+        const BASE_SERVER_PATH = import.meta.env.VITE_API_URL;
+        let fileUrl;
+        if (BASE_SERVER_PATH.includes("localhost")) {
+            const normalizedPath = file.path.replace(/\\/g, '/');
+            fileUrl = `${BASE_SERVER_PATH}/folders/${normalizedPath}`;
+        } else {
+            fileUrl = `${BASE_SERVER_PATH}/folders/${file.path}`;
+        }
+        window.open(fileUrl.toString(), '_blank');
+    };
+
 
     // 6. modal - 등록 모달 / 업로드 모달 /
     const postFolderModal = () => {
@@ -321,8 +365,11 @@ const ManageFile : React.FC = () => {
                 </div>
                 ))}
                 {file?.map((f) => (
-                <div key={`file-${f.name}`} className='w-[200px] h-[200px] flex flex-col items-center justify-center cursor-pointer'>
-                    <img src='/public/assets/folder.png'></img>
+                <div key={`file-${f.name}`}
+                    className='w-[200px] h-[200px] flex flex-col items-center justify-center cursor-pointer'
+                    onClick={() => handleFileOpen(f)}
+                    >
+                    <img src={getImageSourceUrl(f.ext)}></img>
                     <div>{f.name}</div>
                 </div>
                 ))}

@@ -59,6 +59,11 @@ const VideoBackground: React.FC<VideoBackgroundProps> = ({
                     <div className='text-[0.9em] !mb-4'>• 모든 미니프로젝트는 언마운트시 초기값을 초기화합니다.</div>
                     <div className='text-[0.9em] !mb-4'>• 현재 Weather 미니프로젝트는 https 이슈로인해 위치정보를 불러오지 못합니다.</div>
                 </div>
+            case HomeDescTypeEnum.VERSION :
+                return <div className='text-start'>
+                    <div className='!mb-20 text-[1.5em] font-bold'>Version</div>
+                    <div className='text-[0.9em] !mb-4'>• Project의 버전 이력 정보 열람 페이지</div>
+                </div>
         }
     },[convertDesc])
 
@@ -92,12 +97,13 @@ const VideoBackground: React.FC<VideoBackgroundProps> = ({
                 탐색 가이드
             </div>
             <ul className='!mt-[4em] flex flex-col items-start'>
-                <li onClick={()=>setConverDesc(HomeDescTypeEnum.CODE)} className='!mt-[1em] cursor-pointer hover:text-white'>• Code Review</li>
-                <li onClick={()=>setConverDesc(HomeDescTypeEnum.ASIDE)} className='!mt-[1em] cursor-pointer hover:text-white'>• Aside</li>
                 <li onClick={()=>setConverDesc(HomeDescTypeEnum.INTRODUCE)} className='!mt-[1em] cursor-pointer hover:text-white'>• Introduce</li>
                 <li onClick={()=>setConverDesc(HomeDescTypeEnum.BEFE)} className='!mt-[1em] cursor-pointer hover:text-white'>• FE/BE</li>
                 <li onClick={()=>setConverDesc(HomeDescTypeEnum.STUDY)} className='!mt-[1em] cursor-pointer hover:text-white'>• STUDY</li>
+                <li onClick={()=>setConverDesc(HomeDescTypeEnum.CODE)} className='!mt-[1em] cursor-pointer hover:text-white'>• Code Review</li>
+                <li onClick={()=>setConverDesc(HomeDescTypeEnum.ASIDE)} className='!mt-[1em] cursor-pointer hover:text-white'>• Aside</li>
                 <li onClick={()=>setConverDesc(HomeDescTypeEnum.MINI)} className='!mt-[1em] cursor-pointer hover:text-white'>• Mini-Project</li>
+                <li onClick={()=>setConverDesc(HomeDescTypeEnum.VERSION)} className='!mt-[1em] cursor-pointer hover:text-white'>• Versions</li>
             </ul>
             </section>
             <section className='main_footer_section absolute top-[3%] left-[250px] !p-4 h-screen overflow-auto'>

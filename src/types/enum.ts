@@ -49,7 +49,8 @@ export enum HomeDescTypeEnum {
     INTRODUCE,
     BEFE,
     STUDY,
-    MINI
+    MINI,
+    VERSION,
 }
 
 export enum FileTypeEnum {

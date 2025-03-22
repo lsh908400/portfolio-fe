@@ -117,3 +117,22 @@ export interface Files {
     path : string;
     ext : string;
 }
+
+export interface VersionChange {
+    id: string;
+    type: 'feature' | 'improvement' | 'bugfix' | 'security';
+    description: string;
+    issueId?: string;
+    contributor?: string;
+}
+
+export interface VersionData {
+    version: string;
+    releaseDate: string;
+    status: 'stable' | 'beta' | 'alpha' | 'rc';
+    summary: string;
+    changes: VersionChange[];
+    downloadLink?: string;
+    knownIssues?: string[];
+    upgradeNotes?: string;
+}

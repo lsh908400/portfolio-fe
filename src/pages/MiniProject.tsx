@@ -48,13 +48,13 @@ const MiniProject: React.FC = () => {
     const renderContent = useMemo(() => {
         switch (contentPageSection) {
             case 1:
-                return <Weather />
+                return <ManageFile />
             case 2:
                 return <TimeLine />
             case 3:
                 return <CodeSnipet />
             case 4:
-                return <ManageFile />
+                return <Weather />
             default:
                 return null;
         }

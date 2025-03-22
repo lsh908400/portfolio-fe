@@ -11,8 +11,8 @@ const Profile = lazy(() => import('./pages/Profile'))
 const TroubleShooting = lazy(() => import('./pages/TroubleShooting'))
 const Study = lazy(() => import('./pages/Study'))
 const MiniProject = lazy(() => import('./pages/MiniProject'))
-const Job = lazy(() => import('./pages/Job'))
 const PrevProject = lazy(() => import('./pages/PrevProject'))
+const Version = lazy(() => import('./pages/Version'))
 
 // 로딩 중 표시할 컴포넌트
 const LoadingFallback = () => (
@@ -36,8 +36,8 @@ const routes = [
   { path: '/trouble', element: TroubleShooting },
   { path: '/study', element: Study },
   { path: '/mini', element: MiniProject },
-  { path: '/job', element: Job },
-  { path: '/prevproject', element: PrevProject }
+  { path: '/prevproject', element: PrevProject },
+  { path: '/version', element: Version },
 ]
 
 const App: React.FC = () => {
