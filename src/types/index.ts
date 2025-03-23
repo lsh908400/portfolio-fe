@@ -110,6 +110,7 @@ export interface Folder {
     path : string;
     maxSizeBytes : number;
     maxSizeFormatted : string;
+    currentSizeFormatted : string;
 }
 
 export interface Files {

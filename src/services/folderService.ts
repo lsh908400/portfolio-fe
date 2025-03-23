@@ -58,11 +58,17 @@ export const uploadFolder = async (formData : FormData) => {
                 'Content-Type': 'multipart/form-data'
             }
         })
+        console.log("========")
         return response.data;
     }
-    catch(err)
-    {
-        console.error(err)
+    catch (err: any) { // err를 any로 타입 지정
+        // 서버에서 보낸 에러 메시지를 가져오기
+        console.log("======")
+        console.log(err)
+        if (err.response && err.response.data) {
+            throw err.response.data; // 서버에서 반환한 에러 객체를 그대로 throw
+        }
+        console.error('파일 업로드 중 오류:', err);
         throw err;
     }
 }

@@ -47,7 +47,8 @@ const ManageFile : React.FC = () => {
         name : '',
         path : '',
         maxSizeBytes : 0,
-        maxSizeFormatted : ''
+        maxSizeFormatted : '',
+        currentSizeFormatted : ''
     });
 
 
@@ -111,6 +112,7 @@ const ManageFile : React.FC = () => {
         mutationKey : ['upload'],
         mutationFn : async (formData : FormData) => {
             const response = await uploadFolder(formData)
+            console.log(response)
             alert(response.message) 
             return;
         },
@@ -122,7 +124,9 @@ const ManageFile : React.FC = () => {
                 files : []
             })
             setModalState({...modalState, upload : false})
-
+        },
+        onError: (err : any) => {
+            alert(err.message)
         }
     })
 
@@ -137,7 +141,6 @@ const ManageFile : React.FC = () => {
     }
 
     const openFolderHandler = (name : string) => {
-        
         flushSync(()=>{
             if(folderId)
             {
@@ -151,6 +154,7 @@ const ManageFile : React.FC = () => {
         })
         const newPath = pathJoin.join(postFolderForm.path, name);
         setPostFolderForm({...postFolderForm, path : newPath});
+        queryClient.invalidateQueries({ queryKey: ['folder', folderId] });
     }
 
     const closeFolder = () => {
@@ -181,6 +185,7 @@ const ManageFile : React.FC = () => {
                 });
             }
         }
+        queryClient.invalidateQueries({ queryKey: ['folder', folderId] });
     }
 
     const postUploadHandler = () => {
@@ -190,19 +195,21 @@ const ManageFile : React.FC = () => {
             // 폴더 이름 추출 (첫 번째 파일의 경로에서)
             const firstFilePath = files[0].webkitRelativePath;
             const folderName = firstFilePath.split('/')[0];
-            
+
+            let totalSize = 0;
+            Array.from(files).forEach(file => {
+                totalSize += file.size;
+            });
+
             const formData = new FormData();
             formData.append('folderName', folderName); // 폴더 이름 전달
             formData.append('folderPath', folderId ? folderId : '');
+            formData.append('totalSize', totalSize.toString());
             // 각 파일을 FormData에 추가
             Array.from(files).forEach(file => {
                 // 폴더 내부 경로를 그대로 유지
                 formData.append('files', file, file.webkitRelativePath);
             });
-
-            for (const pair of formData.entries()) {
-                console.log(pair[0], pair[1] instanceof File ? `File: ${pair[1].name}` : pair[1]);
-            }
 
             uploadMutation.mutate(formData);
         }
@@ -297,6 +304,7 @@ const ManageFile : React.FC = () => {
                     path : v.path,
                     maxSizeBytes : v.maxSizeBytes,
                     maxSizeFormatted : v.maxSizeFormatted,
+                    currentSizeFormatted : v.currentSizeFormatted,
                 })
             }
             else
@@ -361,7 +369,7 @@ const ManageFile : React.FC = () => {
                     }
                     <img src={`${import.meta.env.VITE_API_URL}/uploads/folder.png`}></img>
                     <div>{v.name}</div>
-                    <div>{v.maxSizeFormatted}</div>
+                    <div>{v.currentSizeFormatted}</div>
                 </div>
                 ))}
                 {file?.map((f) => (
