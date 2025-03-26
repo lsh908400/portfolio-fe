@@ -2,7 +2,6 @@
 import { io, Socket } from 'socket.io-client';
 
 let socket: Socket | null = null;
-let activeDownloadId: string | null = null;
 
 // 단일 다운로드 세션에 대한 처리된 이벤트 추적
 let processedEvents = new Set<string>();
@@ -49,7 +48,6 @@ export const subscribeToDownloadSession = (downloadId: string, callbacks: {
   onCanceled?: (data: any) => void;
 }) => {
   const socketInstance = initializeSocket();
-  activeDownloadId = downloadId;
   
   processedEvents.clear();
   
@@ -131,7 +129,6 @@ export const subscribeToDownloadSession = (downloadId: string, callbacks: {
     
     // 이벤트 처리 상태 정리
     processedEvents.clear();
-    activeDownloadId = null;
   };
 };
 
@@ -142,7 +139,6 @@ export const disconnectSocket = () => {
     socket.removeAllListeners();
     socket.disconnect();
     socket = null;
-    activeDownloadId = null;
     processedEvents.clear();
   }
 };
