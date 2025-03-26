@@ -53,22 +53,62 @@ export const deleteFolder = async (name : string, path: string) => {
 export const uploadFolder = async (formData : FormData) => {
     try
     {
-        const response =await apiConfig.api.post(`${apiConfig.apiPaths.folder}/upload`,formData,{
+        const response = await apiConfig.api.post(`${apiConfig.apiPaths.folder}/upload`,formData,{
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         })
-        console.log("========")
         return response.data;
     }
-    catch (err: any) { // err를 any로 타입 지정
-        // 서버에서 보낸 에러 메시지를 가져오기
-        console.log("======")
-        console.log(err)
+    catch (err: any) { 
         if (err.response && err.response.data) {
-            throw err.response.data; // 서버에서 반환한 에러 객체를 그대로 throw
+            throw err.response.data; 
         }
         console.error('파일 업로드 중 오류:', err);
+        throw err;
+    }
+}
+
+export const downloadFolderOrFile = async (downLoadForm : any) => {
+    try
+    {
+        if(!downLoadForm.path) return;
+        if(!downLoadForm.name) return;
+
+        const response = await apiConfig.api.get(`${apiConfig.apiPaths.folder}/download`,{
+            params: {
+                filePath: downLoadForm.path,
+                fileName: downLoadForm.name
+            },
+            responseType: 'blob',
+        })
+
+        const downloadId = response.headers['x-download-id'];
+
+        let fileName = downLoadForm.name;
+
+        // blob의 type이 application/zip이면 파일 이름에 .zip 확장자가 없으면 추가
+        if (response.data.type === 'application/zip') {
+        if (!fileName.endsWith('.zip')) {
+            fileName += '.zip';
+        }
+        }
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return {
+            data: response.data,
+            downloadId: downloadId
+        };
+    }
+    catch(err)
+    {
+        console.error(err)
         throw err;
     }
 }

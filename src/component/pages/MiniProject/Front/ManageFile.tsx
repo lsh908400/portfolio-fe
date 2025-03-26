@@ -12,7 +12,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useRef, useState } from 'react'
 import { getUser } from '../../../../services/profileService';
-import { deleteFolder, getFolder, postFolder, uploadFolder } from '../../../../services/folderService';
+import { deleteFolder, downloadFolderOrFile, getFolder, postFolder, uploadFolder } from '../../../../services/folderService';
 import { Files, Folder } from '../../../../types';
 import Loading from '../../../util/Loading';
 import ErrorMessage from '../../../util/ErrorMessage';
@@ -21,6 +21,7 @@ import CommonModal from '../../../util/CommonModal';
 import VariableInfo from '../../../util/VariableInfo';
 import { flushSync } from 'react-dom';
 import * as pathJoin from 'path-browserify';
+import DownloadingProgress from '../../../util/DownloadingProgress';
 
 const ManageFile : React.FC = () => {
     const queryClient = useQueryClient();
@@ -50,6 +51,18 @@ const ManageFile : React.FC = () => {
         maxSizeFormatted : '',
         currentSizeFormatted : ''
     });
+    const [contextMenu, setContextMenu] = useState<{
+        visible : boolean,
+        x : number,
+        y : number,
+        folderName : string,
+    }>({
+        visible: false,
+        x: 0,
+        y: 0,
+        folderName: ''
+    });
+    const [currentDownloadId, setCurrentDownloadId] = useState<string | null>();
 
 
     // 2. useRef - 업로드 인풋
@@ -112,7 +125,6 @@ const ManageFile : React.FC = () => {
         mutationKey : ['upload'],
         mutationFn : async (formData : FormData) => {
             const response = await uploadFolder(formData)
-            console.log(response)
             alert(response.message) 
             return;
         },
@@ -127,6 +139,22 @@ const ManageFile : React.FC = () => {
         },
         onError: (err : any) => {
             alert(err.message)
+        }
+    })
+
+    const downloadMutation = useMutation({
+        mutationKey : ['download'],
+        mutationFn : async (downLoadForm : any) => {
+            const response = await downloadFolderOrFile(downLoadForm)
+            if (response?.downloadId) {
+                setCurrentDownloadId(response.downloadId);
+            }
+            return response;
+        },
+        onSuccess : () => {
+        },
+        onError : () => {
+            alert('다운로드 에러')
         }
     })
 
@@ -277,6 +305,14 @@ const ManageFile : React.FC = () => {
         window.open(fileUrl.toString(), '_blank');
     };
 
+    const downloadHandler = (fileName : string) => {
+        const newDownloadForm = {
+            path : postFolderForm.path,
+            name : fileName
+        }
+        downloadMutation.mutate(newDownloadForm)
+    }
+
 
     // 6. modal - 등록 모달 / 업로드 모달 /
     const postFolderModal = () => {
@@ -288,6 +324,15 @@ const ManageFile : React.FC = () => {
 
     const postUploadModal = () => {
         setModalState({folder : false, upload : true , edit : false})
+    }
+
+    const rightClickModal = (e: React.MouseEvent, folderName: string) => {
+        setContextMenu({
+            visible: true,
+            x: e.clientX,
+            y: e.clientY,
+            folderName: folderName
+        });
     }
 
 
@@ -332,6 +377,14 @@ const ManageFile : React.FC = () => {
         }
     },[userData])
 
+    useEffect(() => {
+        const handleClick = () => setContextMenu(prev => ({ ...prev, visible: false }));
+        document.addEventListener('click', handleClick);
+        
+        return () => {
+            document.removeEventListener('click', handleClick);
+        };
+    }, []);
 
 
     return (
@@ -361,7 +414,13 @@ const ManageFile : React.FC = () => {
             : folderData?.length > 0 ? (
             <div className='flex flex-wrap gap-4'>
                 {folder?.map((v) => (
-                <div onClick={()=>openFolderHandler(v.name)} key={`folder-${v.name}`} className='w-[200px] h-[200px] flex flex-col items-center justify-center cursor-pointer relative'>
+                <div 
+                    onContextMenu={(e) => {
+                        e.preventDefault(); // 기본 컨텍스트 메뉴를 방지
+                        // 여기에 오른쪽 클릭 시 실행할 로직을 작성
+                        rightClickModal(e, v.name);
+                    }}
+                    onClick={()=>openFolderHandler(v.name)} key={`folder-${v.name}`} className='w-[200px] h-[200px] flex flex-col items-center justify-center cursor-pointer relative'>
                     {modalState.edit && 
                         <div onClick={(e)=>{e.stopPropagation(); deleteFolderHandler(v.name)}} className='border rounded-full w-[20px] h-[20px] flex justify-center items-center absolute top-[10px] left-[145px] hover:bg-gray-400 hover:translate-x-1 hover:text-white '>
                             <i className='fa-solid fa-minus'></i>
@@ -373,10 +432,21 @@ const ManageFile : React.FC = () => {
                 </div>
                 ))}
                 {file?.map((f) => (
-                <div key={`file-${f.name}`}
-                    className='w-[200px] h-[200px] flex flex-col items-center justify-center cursor-pointer'
+                <div
+                    onContextMenu={(e) => {
+                        e.preventDefault(); // 기본 컨텍스트 메뉴를 방지
+                        // 여기에 오른쪽 클릭 시 실행할 로직을 작성
+                        rightClickModal(e, f.name);
+                    }}
+                    key={`file-${f.name}`}
+                    className='w-[200px] h-[200px] flex flex-col items-center justify-center cursor-pointer relative'
                     onClick={() => handleFileOpen(f)}
                     >
+                    {modalState.edit && 
+                        <div onClick={(e)=>{e.stopPropagation(); deleteFolderHandler(f.name)}} className='border rounded-full w-[20px] h-[20px] flex justify-center items-center absolute top-[10px] left-[145px] hover:bg-gray-400 hover:translate-x-1 hover:text-white '>
+                            <i className='fa-solid fa-minus'></i>
+                        </div>
+                    }
                     <img src={getImageSourceUrl(f.ext)}></img>
                     <div>{f.name}</div>
                 </div>
@@ -465,6 +535,17 @@ const ManageFile : React.FC = () => {
                     )}
                 </div>
             </CommonModal>
+            {contextMenu.visible && (
+                <div 
+                    className="absolute bg-white shadow-md rounded py-2" 
+                    style={{ top: contextMenu.y, left: contextMenu.x }}
+                >
+                    <div className="px-4 py-1 hover:bg-gray-100 cursor-pointer" onClick={()=>downloadHandler(contextMenu.folderName)}>
+                    다운로드
+                    </div>
+                </div>
+            )}
+            {<DownloadingProgress downloadId={currentDownloadId} />}
         </section>
     )
 }
