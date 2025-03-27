@@ -69,46 +69,56 @@ export const uploadFolder = async (formData : FormData) => {
     }
 }
 
-export const downloadFolderOrFile = async (downLoadForm : any) => {
-    try
-    {
-        if(!downLoadForm.path) return;
-        if(!downLoadForm.name) return;
+export const initializeDownload = async (downloadForm: any) => {
+    try {
+        if (!downloadForm.path) return;
+        if (!downloadForm.name) return;
 
-        const response = await apiConfig.api.get(`${apiConfig.apiPaths.folder}/download`,{
-            params: {
-                filePath: downLoadForm.path,
-                fileName: downLoadForm.name
-            },
-            responseType: 'blob',
-        })
+        // 다운로드 초기화 API 호출 (새로 만들어야 함)
+        const response = await apiConfig.api.get(`${apiConfig.apiPaths.folder}/initialize-download`, {
+        params: {
+            filePath: downloadForm.path,
+            fileName: downloadForm.name
+        }
+        });
 
-        const downloadId = response.headers['x-download-id'];
-
-        let fileName = downLoadForm.name;
+        return {
+        downloadId: response.data.downloadId,
+        downloadUrl: response.data.downloadUrl,
+        fileName: response.data.fileName,
+        isFile: response.data.isFile
+        };
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+};
+// 2. 실제 다운로드 시작 함수
+export const startDownload = async (downloadUrl: string, fileName: string) => {
+    try {
+        const response = await apiConfig.api.get(downloadUrl, {
+        responseType: 'blob'
+        });
 
         // blob의 type이 application/zip이면 파일 이름에 .zip 확장자가 없으면 추가
-        if (response.data.type === 'application/zip') {
-        if (!fileName.endsWith('.zip')) {
-            fileName += '.zip';
-        }
+        let finalFileName = fileName;
+        if (response.data.type === 'application/zip' && !finalFileName.endsWith('.zip')) {
+        finalFileName += '.zip';
         }
 
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', fileName);
+        link.setAttribute('download', finalFileName);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
         return {
-            data: response.data,
-            downloadId: downloadId
+        data: response.data
         };
-    }
-    catch(err)
-    {
-        console.error(err)
+    } catch (err) {
+        console.error(err);
         throw err;
     }
-}
+};

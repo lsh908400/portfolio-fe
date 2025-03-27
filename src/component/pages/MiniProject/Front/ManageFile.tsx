@@ -1,18 +1,18 @@
 /**
  * 2025 03 18 - 이상훈
- * 1. useState - 폴더 / 파일 / 업로드 파일정보 / 상위경로 / 모달상태 / Submit폼
+ * 1. useState - 폴더 / 파일 / 업로드 파일정보 / 상위경로 / 모달상태 / Submit폼 / 팝업위치 / 웹소켓 주소
  * 2. useRef - 업로드 인풋
  * 3. useQuery - 유저 / 폴더
- * 4. mutation - 폴더 등록 / 삭제 / 업로드
- * 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리 / 확장자별 이미지 변환 / 파일 열기
- * 6. modal - 등록 모달 / 업로드 모달 /
- * 7. useEffect - 폴더 정렬 / 초기설정 및 초기화
+ * 4. mutation - 폴더 등록 / 삭제 / 업로드 / 다운로드
+ * 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리 / 확장자별 이미지 변환 / 파일 열기 / 다운로드
+ * 6. modal - 등록 모달 / 업로드 모달 / 오른쪽클릭 팝업
+ * 7. useEffect - 폴더 정렬 / 초기설정 및 초기화 / 팝업 해제
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React, { useEffect, useRef, useState } from 'react'
 import { getUser } from '../../../../services/profileService';
-import { deleteFolder, downloadFolderOrFile, getFolder, postFolder, uploadFolder } from '../../../../services/folderService';
+import { deleteFolder, getFolder, initializeDownload, postFolder, startDownload, uploadFolder } from '../../../../services/folderService';
 import { Files, Folder } from '../../../../types';
 import Loading from '../../../util/Loading';
 import ErrorMessage from '../../../util/ErrorMessage';
@@ -26,7 +26,7 @@ import DownloadingProgress from '../../../util/DownloadingProgress';
 const ManageFile : React.FC = () => {
     const queryClient = useQueryClient();
 
-    // 1. useState - 폴더 / 파일 / 업로드 파일정보 / 상위경로 / 모달상태 / Submit폼
+    // 1. useState - 폴더 / 파일 / 업로드 파일정보 / 상위경로 / 모달상태 / Submit폼 / 팝업위치 / 웹소켓 주소
     const [folderId,setFolderId] = useState<string>();
     const [folder, setFolder] = useState<Folder[]>();
     const [file, setFile] = useState<Files[]>();
@@ -89,7 +89,7 @@ const ManageFile : React.FC = () => {
     })
 
 
-    // 4. mutation - 폴더 등록 / 삭제 / 업로드
+    // 4. mutation - 폴더 등록 / 삭제 / 업로드 / 다운로드
     const postFolderMutation = useMutation({
         mutationKey : ['folder',folderId],
         mutationFn: async () => {
@@ -145,21 +145,32 @@ const ManageFile : React.FC = () => {
     const downloadMutation = useMutation({
         mutationKey : ['download'],
         mutationFn : async (downLoadForm : any) => {
-            const response = await downloadFolderOrFile(downLoadForm)
+            const response = await initializeDownload(downLoadForm)
             if (response?.downloadId) {
                 setCurrentDownloadId(response.downloadId);
             }
             return response;
         },
-        onSuccess : () => {
+        onSuccess: (data) => {
+            if (data?.downloadId && data?.downloadUrl && data?.fileName) {
+                setTimeout(() => {
+                    startDownload(data.downloadUrl, data.fileName)
+                        .catch(error => {
+                            console.error('다운로드 시작 오류:', error);
+                            alert('다운로드 시작 중 오류가 발생했습니다.');
+                        });
+                }, 500); // 500ms 지연
+            }
         },
         onError : () => {
             alert('다운로드 에러')
         }
     })
 
+    
 
-    // 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리 / 확장자별 이미지 변환 / 파일 열기
+
+    // 5. trigger mutation - 폴더 등록 / 삭제 / 폴더 열기 / 닫기 / 업로드 / 업로드파일 관리 / 확장자별 이미지 변환 / 파일 열기 / 다운로드
     const postFolderHandler = () => {
         postFolderMutation.mutate();
     }
@@ -314,7 +325,7 @@ const ManageFile : React.FC = () => {
     }
 
 
-    // 6. modal - 등록 모달 / 업로드 모달 /
+    // 6. modal - 등록 모달 / 업로드 모달 / 오른쪽클릭 팝업
     const postFolderModal = () => {
         flushSync(()=>{
             setPostFolderForm({...postFolderForm, maxSizeBytes : 10485760})
@@ -336,7 +347,7 @@ const ManageFile : React.FC = () => {
     }
 
 
-    // 7. useEffect - 폴더 정렬 / 초기설정 및 초기화
+    // 7. useEffect - 폴더 정렬 / 초기설정 및 초기화 / 팝업 해제
     useEffect(()=>{
         if(!folderData) return;
         const folderArray : Folder[] = [];

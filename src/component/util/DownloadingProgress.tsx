@@ -26,6 +26,8 @@ const DownloadingProgress : React.FC<DownloadProgressProps> = ({downloadId}) => 
         if (!downloadId) {
             return;
         }
+
+        const isReconnect = true; 
         
         const unsubscribe = subscribeToDownloadSession(downloadId, {
             onAnalyzing: (data) => {
@@ -77,7 +79,7 @@ const DownloadingProgress : React.FC<DownloadProgressProps> = ({downloadId}) => 
                     message: data.message || '다운로드 중 오류가 발생했습니다.'
                 }));
             }
-        });
+        },isReconnect);
         
         return () => {
             unsubscribe();

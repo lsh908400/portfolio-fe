@@ -39,20 +39,30 @@ export const initializeSocket = (): Socket => {
 };
 
 // 다운로드 세션 구독 함수
-export const subscribeToDownloadSession = (downloadId: string, callbacks: {
-  onAnalyzing?: (data: any) => void;
-  onStart?: (data: any) => void;
-  onProgress?: (data: any) => void;
-  onComplete?: (data: any) => void;
-  onError?: (data: any) => void;
-  onCanceled?: (data: any) => void;
-}) => {
+export const subscribeToDownloadSession = (
+  downloadId: string, 
+  callbacks: {
+    onAnalyzing?: (data: any) => void;
+    onStart?: (data: any) => void;
+    onProgress?: (data: any) => void;
+    onComplete?: (data: any) => void;
+    onError?: (data: any) => void;
+    onCanceled?: (data: any) => void;
+  },
+  isReconnect: boolean = false // 재연결 여부를 나타내는 매개변수 추가
+) => {
   const socketInstance = initializeSocket();
   
   processedEvents.clear();
   
   const handleEvent = (eventType: string, data: any, callback?: (data: any) => void) => {
     if (data.downloadId !== downloadId) return;
+  
+    // progress 이벤트는 항상 처리하도록 수정
+    if (eventType.includes('progress')) {
+      if (callback) callback(data);
+      return;
+    }
     
     const eventId = `${downloadId}:${eventType}`;
     
@@ -85,8 +95,11 @@ export const subscribeToDownloadSession = (downloadId: string, callbacks: {
   }
   
   if (callbacks.onComplete) {
-    socketInstance.on('download:complete', (data) => 
-      handleEvent('complete', data, callbacks.onComplete));
+    socketInstance.on('download:complete', (data) => {
+      handleEvent('complete', data, callbacks.onComplete);
+      // 완료 이벤트를 받았을 때 서버에 알림
+      socketInstance.emit('download:complete-received', downloadId);
+    });
   }
   
   if (callbacks.onError) {
@@ -115,16 +128,17 @@ export const subscribeToDownloadSession = (downloadId: string, callbacks: {
     }
   });
   
+  
   // 서버에 다운로드 세션 참여 요청 
   socketInstance.emit('download:start', downloadId);
   
-  // 서버에 현재 다운로드 상태 요청
-  socketInstance.emit('download:request-status', downloadId);
+  // 재연결인 경우에만 상태 요청 (히스토리 재생)
+  if (isReconnect) {
+    // 서버에 현재 다운로드 상태 요청
+    socketInstance.emit('download:request-status', downloadId);
+  }
   
   return () => {
-    console.log(`소켓 서비스: 다운로드 세션 구독 해제 ID: ${downloadId}`);
-    
-    // 이벤트 리스너 제거
     socketInstance.off();
     
     // 이벤트 처리 상태 정리
@@ -135,7 +149,6 @@ export const subscribeToDownloadSession = (downloadId: string, callbacks: {
 // 소켓 연결 해제
 export const disconnectSocket = () => {
   if (socket) {
-    console.log('소켓 서비스: 연결 종료');
     socket.removeAllListeners();
     socket.disconnect();
     socket = null;

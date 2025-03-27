@@ -18,6 +18,7 @@ import CodeSnipet from '../component/pages/MiniProject/Front/CodeSnipet';
 import Loading from '../component/util/Loading';
 import ErrorMessage from '../component/util/ErrorMessage';
 import ManageFile from '../component/pages/MiniProject/Front/ManageFile';
+import Options from '../component/pages/MiniProject/Front/Options';
 
 const MiniProject: React.FC = () => {
     // 1. searchParams - 타입
@@ -55,6 +56,8 @@ const MiniProject: React.FC = () => {
                 return <CodeSnipet />
             case 4:
                 return <Weather />
+            case 5:
+                return <Options />
             default:
                 return null;
         }
